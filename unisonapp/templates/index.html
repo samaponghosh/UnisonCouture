@@ -1,0 +1,493 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unison Couture</title>
+    <link rel="icon" type="image/x-icon" href="{% static "imgs/unisonCopy.ico" %}">
+    <script
+      src="https://kit.fontawesome.com/cb792c0850.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}" />
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}" />
+  </head>
+  <style>
+    /* Custom styles for the navbar */
+    {% comment %} .navbar {
+      background-color: #6a5acd;
+    }
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      /* text-shadow: 0 0 0.1em #ffffff, 0 0 0.1em #e4e3e3; */
+    }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: #00a7f5;
+    }
+    .navbar-brand img {
+      height: 50px;
+      width: 190px;
+    }
+    .nav-item {
+      color: white;
+    }
+    @media (max-width: 991px) {
+      .navbar .navbar-brand img {
+        height: 40px;
+        width: 150px;
+      }
+      .navbar {
+        background-color: #6a5acd;
+        box-shadow: 0 0 15px #ffffff;
+        height: 65px;
+      }
+      .navbar-toggler {
+        padding: 21px 15px 0 0;
+      }
+      .navbar-toggler-icon {
+        position: relative;
+        top: 8px;
+        margin-top: -5px;
+      }
+    } {% endcomment %}
+    {% comment %} .topnav {
+      overflow: hidden;
+      background-color: #333;
+      position: relative;
+    }
+    
+    /* Hide the links inside the navigation menu (except for logo/home) */
+    .topnav #myLinks {
+      display: none;
+    }
+    
+    /* Style navigation menu links */
+    .topnav a {
+      color: white;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+      display: block;
+    }
+    
+    /* Style the hamburger menu */
+    .topnav a.icon {
+      background: black;
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    
+    /* Add a grey background color on mouse-over */
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    /* Style the active link (or home/logo) */
+    .active {
+      background-color: #04AA6D;
+      color: white;
+    } {% endcomment %}
+  </style>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark fixed-top">
+      <a class="navbar-brand" style="color: white; text-shadow: 0 0 0.5em #ffffff, 0 0 0.1em #e4e3e3; font-size: 26px;" href="/"
+        ><b>Unison Couture</b></a
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/stock_screening">Stocks Screening</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/position_calculator"
+              >Position Size Calculator</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/screen_config">Screening Configuration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/search_similar_stocks"
+              >Search Similar Stocks</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/gap_prediction"
+              >Nifty-50 Gap Prediction</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/about"
+              >About</a
+            >
+          </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item active">
+            <p class="nav-link" style="color:#ffa600 !important;">
+              Hi, <a>{{request.user.username}}</a><span class="sr-only"></span>
+            </p>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" style="color:#ff6361 !important;" href="/logout"
+              >Logout<span class="sr-only"></span
+            ></a>
+          </li>
+          {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" style="color:#ff6361 !important;" href="/login"
+              >Login<span class="sr-only"></span
+            ></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" style="color:#ff6361 !important;" href="/signup"
+              >Create new account<span class="sr-only"></span
+            ></a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    {% comment %} <div class="topnav">
+      <a href="/" class="active">Logo</a>
+      <!-- Navigation links (hidden by default) -->
+      <div id="myLinks">
+        <a href="#news">News</a>
+        <a href="#contact">Contact</a>
+        <a href="#about">About</a>
+      </div>
+      <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div> {% endcomment %}
+
+    <div class="banner">
+      <br></br>
+      <div class="border"></div>
+      <h2><span>Unison Couture</span></h2>
+      <p>Empowering Your Financial Future with Precision Predictions.</p>
+
+      <div class="border border-bottom"></div>
+      <br />
+      <button
+        onclick="window.location.href='https://whatsapp.com/channel/0029VaGUBY7ATRSiBrYU6D3G';"
+      >
+        Join whatsapp channel
+      </button>
+    </div>
+
+    <!-- ----card-- -->
+    <div class="main">
+      <h1>Explore Our Services</h1>
+      <ul class="cards">
+        <li
+          class="cards_item"
+          onclick="window.location.href='/gap_prediction';"
+        >
+          <div class="card">
+            <div class="card_image">
+              <img src="{% static 'imgs/gapPredict.png' %}" />
+            </div>
+            <div class="card_content1">
+              <h1 class="card_title">Nifty-50 Gap prediction</h1>
+              <br>
+              <h5 class="card_text">
+                Predict the Gap, Grab the Opportunity - Nifty Fifty is the Key!
+              </h5>
+              <button
+                class="btn card_btn"
+                onclick="window.location.href='/gap_prediction';"
+              >
+                Predict now
+              </button>
+            </div>
+          </div>
+        </li>
+        <li
+          class="cards_item"
+          onclick="window.location.href='/position_calculator';"
+        >
+          <div class="card">
+            <div class="card_image">
+              <img src="{% static 'imgs/posCalc.png' %}" />
+            </div>
+            <div class="card_content2">
+              <h1 class="card_title">Position size calculator</h1>
+              <br />
+              <h5 class="card_text">
+                Size It Right, Trade with Might — Your Nifty-50 Position Guide!
+              </h5>
+              <button
+                class="btn card_btn"
+                onclick="window.location.href='/position_calculator';"
+              >
+                Calculate now
+              </button>
+            </div>
+          </div>
+        </li>
+        <li
+          class="cards_item"
+          onclick="window.location.href='/stock_screening';"
+        >
+          <div class="card">
+            <div class="card_image">
+              <img src="{% static 'imgs/screen.png' %}" />
+            </div>
+            <div class="card_content3">
+              <h1 class="card_title">Stocks Screening</h1>
+              <br />
+              <h5 class="card_text">
+                Invest Smart, Screen Smarter - Your Gateway to Informed
+                Decisions!
+              </h5>
+              <button class="btn card_btn">Start Screening</button>
+            </div>
+          </div>
+        </li>
+        <li
+          class="cards_item"
+          onclick="window.location.href='/search_similar_stocks';"
+        >
+          <div class="card">
+            <div class="card_image">
+              <img src="{% static 'imgs/simstok.png' %}" />
+            </div>
+            <div class="card_content4">
+              <h1 class="card_title">Search Similar Stocks</h1>
+              <br />
+              <h5 class="card_text">
+                Navigate the Stocks Jungle - Screen, Pick, and Prosper!
+              </h5>
+              <button class="btn card_btn">Search</button>
+            </div>
+          </div>
+        </li>
+        <li class="cards_item" onclick="window.location.href='/screen_config';">
+          <div class="card">
+            <div class="card_image">
+              <img src="{% static 'imgs/config.png' %}" />
+            </div>
+            <div class="card_content6">
+              <h1 class="card_title">Screening Configuration</h1>
+              <br />
+              <h5 class="card_text">
+                Config your screening process as per your need
+              </h5>
+              <button class="btn card_btn">Set Configuration</button>
+            </div>
+          </div>
+        </li>
+        <li class="cards_item" onclick="window.location.href='/about';">
+          <div class="card">
+            <div class="card_image">
+              <img src="{% static 'imgs/unison.jpg' %}" />
+            </div>
+            <div class="card_content5">
+              <h1 class="card_title">About</h1>
+              <br />
+              <h5 class="card_text">
+                Demo of Lorem ipsum dolor sit amet, consectetur adipisicing
+                elit.
+              </h5>
+              <button class="btn card_btn">Read More</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <footer class="footer-section">
+      <div class="container">
+        <div class="footer-cta pt-5 pb-5">
+          <div class="row">
+            <div class="col-xl-4 col-md-4 mb-30">
+              <div class="single-cta">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="cta-text">
+                  <h4>Find us</h4>
+                  <span
+                    >62/D/1 Raja SC Mullick Road Jadavpur Kolkata 700032 West
+                    Bengal</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 col-md-4 mb-30">
+              <div class="single-cta">
+                <i class="fas fa-phone"></i>
+                <div class="cta-text">
+                  <h4>Call us</h4>
+                  <span>+91 9836983264</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 col-md-4 mb-30">
+              <div class="single-cta">
+                <i class="far fa-envelope-open"></i>
+                <div class="cta-text">
+                  <h4>Mail us</h4>
+                  <span>connect@conocimientoinfotech.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-content pt-5 pb-5">
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 mb-50">
+              <div class="footer-widget">
+                <div class="footer-logo">
+                  <a href="/"
+                    ><img
+                      src="{% static 'imgs/unison.jpg' %}"
+                      class="img-fluid"
+                      alt="Unison Couture"
+                      style="border-radius:25px;"
+                  /></a>
+                </div>
+                {% comment %}
+                <div class="footer-text">
+                  <p>
+                    Lorem ipsum dolor sit amet, consec tetur adipisicing elit,
+                    sed do eiusmod tempor incididuntut consec tetur adipisicing
+                    elit,Lorem ipsum dolor sit amet.
+                  </p>
+                </div>
+                {% endcomment %}
+                <div class="footer-social-icon">
+                  <span>Follow us</span>
+                  <a href="#"><i class="fab fa-facebook-f facebook-bg"></i></a>
+                  <a href="#"><i class="fab fa-twitter twitter-bg"></i></a>
+                  <a href="#"><i class="fab fa-google-plus-g google-bg"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-30">
+              <div class="footer-widget">
+                <div class="footer-widget-heading">
+                  <h3>Quick Links</h3>
+                </div>
+                <ul>
+                  <li><a href="/gap_prediction">Nifty-50 Gap Prediction</a></li>
+                  <li>
+                    <a href="/position_calculator">Position size calculator</a>
+                  </li>
+                  <li><a href="/stock_screening">Stock screening</a></li>
+                  <li>
+                    <a href="/search_similar_stocks">Search similar stocks</a>
+                  </li>
+                  <li><a href="/screen_config">Screening Configuration</a></li>
+                  <li><a href="/about">About</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyright-area">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 text-center text-lg-left">
+              <div class="copyright-text">
+                <p>
+                  Copyright &copy; 2024, All Right Reserved
+                  <a href="https://www.conocimientoinfotech.com/"
+                    >conocimientoinfotech</a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+
+    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script
+      type="text/javascript"
+      src="{% static 'js/owl.carousel.js' %}"
+    ></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+      $("#myCarousel").carousel({
+        interval: 3000,
+      });
+
+      $(".testimonial_owlCarousel").owlCarousel({
+        loop: true,
+        margin: 10,
+        dots: false,
+        nav: true,
+        autoplay: false,
+        smartSpeed: 3000,
+        autoplayTimeout: 4000,
+        responsive: {
+          0: {
+            items: 1,
+          },
+          600: {
+            items: 1,
+          },
+          1000: {
+            items: 1,
+          },
+        },
+      });
+      function myFunction() {
+        var x = document.getElementById("myLinks");
+        if (x.style.display === "block") {
+          x.style.display = "none";
+        } else {
+          x.style.display = "block";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<style>
+    .block-container {
+         padding-top: 1rem;
+         padding-bottom: 0rem;
+         padding-left: 5rem;
+         padding-right: 5rem;
+     }
+    .stButton>button {
+         height: 70px;
+     }
+    .stDownloadButton>button {
+         height: 70px;
+     }
+     th {
+         text-align: left;
+     }
+ </style>
+ 
+ <form method="post">
+     {% csrf_token %}
+     <select name="tickerOption">
+         {% for option in list_index %}
+             <option value="{{ option }}">{{ option }}</option>
+         {% endfor %}
+     </select>
+     <input type="date" name="picked_date" value="{{ today|date:'Y-m-d' }}">
+     <select name="executeOption">
+         {% for option in list_criteria %}
+             <option value="{{ option }}">{{ option }}</option>
+         {% endfor %}
+     </select>
+     <button type="submit" name="start_button">Start Screening</button>
+ </form>
+ 
+ <!-- Add a container to display the result table -->
+ <div id="result-table">
+     <!-- This will be populated by the show_df_as_result_table function -->
+ </div>
+ 
+ <script>
+     // Add JavaScript code to update the result table container
+     // when the start button is clicked
+     document.addEventListener("DOMContentLoaded", function() {
+         const startButton = document.querySelector("button[name='start_button']");
+         startButton.addEventListener("click", function() {
+             // Make an AJAX request to the show_df_as_result_table view
+             // and update the result table container with the response
+             const xhr = new XMLHttpRequest();
+             xhr.open("GET", "{% url '/' %}", true);
+             xhr.onload = function() {
+                 if (xhr.status === 200) {
+                     document.getElementById("result-table").innerHTML = xhr.responseText;
+                 }
+             };
+             xhr.send();
+         });
+     });
+ </script>

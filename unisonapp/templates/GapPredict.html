@@ -1,0 +1,22 @@
+{% extends "Navbar.html" %} {% block body %}
+<div>
+  {% comment %} {% if messages %} {% for message in messages %}
+  <div class="alert {{message.tags}} alert-dismissible" role="alert">
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+      ><span aria-hidden="true">&times;</span></span
+    >
+    {{message}}
+  </div>
+  {% endfor %} {% endif %} {% endcomment %}
+  {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+</div>
+<div>
+    {{ df_html | safe }}
+</div>
+{% endblock body %}

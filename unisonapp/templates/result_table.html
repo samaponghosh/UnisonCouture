@@ -1,0 +1,37 @@
+{% extends "Navbar.html" %} {% block style %} th { text-align: left; } {%
+endblock style %} {% endblock style%}
+{% block body %} 
+{% if form.errors %} {% for field in form %}
+{% for error in field.errors %}
+<div class="alert alert-danger">
+  <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+    ><span aria-hidden="true">&times;</span></span
+  >
+  <strong>{{field.name|title}}:</strong> {{ error|escape }}
+</div>
+{% endfor %} {% endfor %} {% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+  <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+    ><span aria-hidden="true">&times;</span></span
+  >
+  <strong>{{ error|escape|title }}</strong>
+</div>
+{% endfor %} {% endif %} {% if messages %} {% for message in messages %}
+<div class="alert {{message.tags}} alert-dismissible" role="alert">
+  <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+    ><span aria-hidden="true">&times;</span></span
+  >
+  {{message}}
+</div>
+{% endfor %} {% endif %}
+
+<br />
+<br />
+{{ df | safe }}
+<br />
+<div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+  <button class="btn btn-primary btn-lg" onclick="window.location.href='/'">
+    Back to home
+  </button>
+  {% endblock body %}
+</div>
