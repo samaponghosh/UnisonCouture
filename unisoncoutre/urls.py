@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from unisonapp.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +28,6 @@ urlpatterns = [
     path('stock_screening', stockScreen, name='stock_screening'),
     path('search_similar_stocks', simSearch, name='search_similar_stocks'),
     path('screen_config', screenConfig, name='screen_config'),
-    path('about', about, name='about')
+    path('about', about, name='about'),
+    path('option_chain_analyzer/', include('optionChain.urls'))
 ]

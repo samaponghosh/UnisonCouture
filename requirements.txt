@@ -71,3 +71,6 @@ num2words
 advanced-ta
 django
 gunicorn
+streamtologger
+pandas
+requests

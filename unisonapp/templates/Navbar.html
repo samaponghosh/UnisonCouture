@@ -64,7 +64,7 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="/screen_config">Screening Configuration</a>
+            <a class="nav-link" style="color: #fff; !important" href="/screen_config">Screening Configuration</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" style="color: #fff !important;" href="/search_similar_stocks"
@@ -77,21 +77,28 @@
             >
           </li>
           <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important;" href="/option_chain_analyzer"
+              >Option Chain analyzer</a
+            >
+          </li>
+          {% comment %} <li class="nav-item">
             <a class="nav-link" style="color: #fff !important;" href="/about"
               >About</a
             >
-          </li>
+          </li> {% endcomment %}
           {% if request.user.is_authenticated %}
           <li class="nav-item active">
-            <p class="nav-link" style="color:#ffa600 !important;">
-              Hi, <a>{{request.user.username}}</a><span class="sr-only"></span>
-            </p>
+            <div id="hoverText">
+              <span title="Hi, {{request.user.username}}"><div class="fa-solid fa-user" style="color:#ffa600 !important;font-size:25px;margin-top:10px;margin-left:15px;" onclick="alert('Logged In as {{request.user.username}}')"></div></span>
+            </div>
           </li>
+          
           <li class="nav-item active">
-            <a class="nav-link" style="color:#ff6361 !important;" href="/logout"
-              >Logout<span class="sr-only"></span
-            ></a>
+            <div id="hoverText">
+              <span title="Logout"><div class="fa fa-sign-out" style="color:#ffa600 !important;font-size:25px;margin-top:10px;margin-left:20px;" onclick="save()"></div></span>
+            </div>
           </li>
+          
           {% else %}
           <li class="nav-item active">
             <a class="nav-link" style="color:#ff6361 !important;" href="/login"
@@ -100,59 +107,21 @@
           </li>
           <li class="nav-item active">
             <a class="nav-link" style="color:#ff6361 !important;" href="/signup"
-              >Create new account<span class="sr-only"></span
+              >Signup<span class="sr-only"></span
             ></a>
           </li>
           {% endif %}
         </ul>
       </div>
-      {% comment %} <div class="mobile-position">
-        <label class="theme-selector">
-          <input type="checkbox" id="themeToggle">
-          <i class="gg-sun"></i>
-          <i class="gg-moon"></i>
-        </label>
-        </div> {% endcomment %}
     </nav>
-    {% comment %} <script>
-      const bodyElement = document.querySelector('body');
-	const themeToggle = document.querySelector('#themeToggle');
-	const darkModeMql = window.matchMedia('(prefers-color-scheme: dark)');
+    <script>
+      function save(){	   
+        if (confirm("Do you want to Logout?") == true) {
+          window.location.href = '/logout'
+        } 
   
-	const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : userPreference(darkModeMql);
-  
-	if (currentTheme) {
-	  bodyElement.classList.add(currentTheme);
-  
-	  if (currentTheme === 'dark') {
-		themeToggle.checked = true;
-	  }
-	}
-  
-	function userPreference(e) {
-	  if (e.matches) {
-		bodyElement.classList.add("dark");
-		return "dark"
-	  } else {
-		bodyElement.classList.remove("dark");
-		return ""
-	  }
-	}
-  
-	darkModeMql.addListener(userPreference);
-  
-	function themeSwitcher(e) {
-	  if (e.target.checked) {
-		bodyElement.classList.add('dark');
-		localStorage.setItem('theme', 'dark');
-	  } else {
-		bodyElement.classList.remove('dark');
-		localStorage.setItem('theme', '');
-	  }
-	}
-  
-	themeToggle.addEventListener('change', themeSwitcher);
-    </script> {% endcomment %}
+      }
+      </script>
     {% block body %} {% endblock %}
   </body>
 </html>
