@@ -20,7 +20,7 @@ pytoml
 retrying
 scipy==1.11.2
 # ta-lib
-TA-Lib-Precompiled
+# TA-Lib-Precompiled
 tabulate
 # yfinance==0.1.87
 yfinance==0.2.32
