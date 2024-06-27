@@ -1,8 +1,102 @@
 {% extends "Navbar.html" %}
 {% load static %}
+{% block head %}
+<script>
+setTimeout(function () {
+    location.href = "/option_chain_analyzer/result";
+    console.log("jafhcsc")
+}, 30000);
+</script>
+{% endblock head %}
 {% block body %}
-<br />
-<br />
-{{ merged_inner | safe }}
+{% if messages %} {% for message in messages %}
+    <div class="alert {{message.tags}} alert-dismissible" role="alert">
+      <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+        ><span aria-hidden="true">&times;</span></span
+      >
+      {{message}}
+    </div>
+    {% endfor %} {% endif %}
+
+<div class="table-responsive">
+    <table id="example" class="table table-hover display">
+        <thead>
+            <tr style="color:#034C65">
+                <th>Time</th>
+                <th>Value</th>
+                <th>Index</th>
+                <th>Call Sum in K</th>
+                <th>Put Sum in K</th>
+                <th>Difference in K</th>
+                <th>Call Boundary</th>
+                <th>Put Boundary</th>
+                <th>Call ITM</th>
+                <th>Put ITM</th>
+                <th>Expiry Date</th>
+                <th>Open Interest</th>
+                <th>Put ITM</th>
+                <th>Put Exits</th>
+                <th>Call Itm</th>
+                <th>Call Exits</th>
+                <th>Put Call Ratio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in chart %}
+            <tr>
+                <td>{{i.str_current_time}}</td>
+                <td>{{i.points}}</td>
+                <td>{{i.index}}</td>
+                <td>{{i.call_sum}}</td>
+                <td>{{i.put_sum}}</td>
+                <td>{{i.difference}}</td>
+                <td>{{i.call_boundary}}</td>
+                <td>{{i.put_boundary}}</td>
+                <td>{{i.call_itm}}</td>
+                <td>{{i.put_itm}}</td>
+                <td>{{i.expiry_date}}</td>
+                <td>{{i.oi_label}}</td>
+                <td>{{i.put_itm_val}}</td>
+                <td>{{i.put_exits_label}}</td>
+                <td>{{i.call_itm_val}}</td>
+                <td>{{i.call_exits_label}}</td>
+                <td>{{i.put_call_ratio}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+
+{% comment %} <div class="table-responsive">
+    <table id="example1" class="table table-hover display">
+        <thead>
+            <tr style="color:#034C65">
+                <th>Open Interest</th>
+                <th>Put ITM</th>
+                <th>Put Exits</th>
+                <th>Call Itm</th>
+                <th>Call Exits</th>
+                <th>Put Call Ratio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in chart %}
+            <tr>
+                <td>{{i.oi_label}}</td>
+                <td>{{i.put_itm_val}}</td>
+                <td>{{i.put_exits_label}}</td>
+                <td>{{i.call_itm_val}}</td>
+                <td>{{i.call_exits_label}}</td>
+                <td>{{i.put_call_ratio}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> {% endcomment %}
+<center>
+<a class="btn btn-danger" href="/option_chain_analyzer/delete_old_records" onclick="return confirm('Are You Sure?')">Delete old records</a>
+<a class="btn btn-primary" href="/option_chain_analyzer/download_exel" onclick="return confirm('Are You Sure?')">Download exel file</a>
+<br>
 <br />
 {% endblock body %}
