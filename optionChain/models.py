@@ -4,28 +4,31 @@ from django.db import models
 class NSEOptionChainAnalyzer(models.Model):
     uname = models.CharField(max_length=255)
     index = models.CharField(max_length=255)
-    stock = models.CharField(max_length=255)
-    expiry_date = models.CharField(max_length=255)
+    stock = models.CharField(max_length=255, null=True)
+    expiry_date = models.CharField(max_length=255, null=True)
     sp_entry = models.FloatField()
     str_current_time = models.CharField(max_length=255)
-    points = models.FloatField()
-    call_sum = models.FloatField()
-    put_sum = models.FloatField()
-    difference = models.FloatField()
-    call_boundary = models.FloatField()
-    put_boundary = models.FloatField()
-    call_itm = models.FloatField()
-    put_itm = models.FloatField()
-    oi_label = models.CharField(max_length=50)
-    put_call_ratio = models.FloatField()  
-    call_exits_label = models.CharField(max_length=10) 
-    call_itm_val = models.CharField(max_length=10) 
-    put_exits_label = models.CharField(max_length=10)
-    put_itm_val = models.CharField(max_length=10)
+    points = models.FloatField( null=True)
+    call_sum = models.FloatField( null=True)
+    put_sum = models.FloatField( null=True)
+    difference = models.FloatField( null=True)
+    call_boundary = models.FloatField( null=True)
+    put_boundary = models.FloatField( null=True)
+    call_itm = models.FloatField( null=True)
+    put_itm = models.FloatField( null=True)
+    oi_label = models.CharField(max_length=50,  null=True)
+    put_call_ratio = models.FloatField( null=True)  
+    call_exits_label = models.CharField(max_length=10, null=True) 
+    call_itm_val = models.CharField(max_length=10, null=True) 
+    put_exits_label = models.CharField(max_length=10, null=True)
+    put_itm_val = models.CharField(max_length=10, null=True)
 
 class IndexExpDates(models.Model):
     index = models.CharField(max_length=255)
     expiry_date = models.CharField(max_length=255)
+
+class StockOptions(models.Model):
+    Indices = models.CharField(max_length=255)
 
     
     

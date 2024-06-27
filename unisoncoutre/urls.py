@@ -28,6 +28,5 @@ urlpatterns = [
     path('stock_screening', stockScreen, name='stock_screening'),
     path('search_similar_stocks', simSearch, name='search_similar_stocks'),
     path('screen_config', screenConfig, name='screen_config'),
-    path('about', about, name='about'),
     path('option_chain_analyzer/', include('optionChain.urls'))
 ]

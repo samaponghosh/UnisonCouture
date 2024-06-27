@@ -4,20 +4,24 @@
 <script>
 setTimeout(function () {
     location.href = "/option_chain_analyzer/result";
-    console.log("jafhcsc")
-}, 30000);
+}, 20000);
+</script>
+<script>
+    onbeforeunload = function() {alert(",kbjl");
+    window.location.href = "/option_chain_analyzer/delete_old_records_go_home" };
+    {% comment %} window.history.go(1); {% endcomment %}
+    {% comment %} window.location.replace("/option_chain_analyzer/delete_old_records") {% endcomment %}
 </script>
 {% endblock head %}
 {% block body %}
 {% if messages %} {% for message in messages %}
-    <div class="alert {{message.tags}} alert-dismissible" role="alert">
-      <span type="button" class="close" data-dismiss="alert" aria-label="Close"
-        ><span aria-hidden="true">&times;</span></span
-      >
-      {{message}}
-    </div>
-    {% endfor %} {% endif %}
-
+<div class="alert {{message.tags}} alert-dismissible" role="alert">
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+    ><span aria-hidden="true">&times;</span></span
+    >
+    {{message}}
+</div>
+{% endfor %} {% endif %}
 <div class="table-responsive">
     <table id="example" class="table table-hover display">
         <thead>
@@ -33,12 +37,12 @@ setTimeout(function () {
                 <th>Call ITM</th>
                 <th>Put ITM</th>
                 <th>Expiry Date</th>
-                <th>Open Interest</th>
+                {% comment %} <th>Open Interest</th>
                 <th>Put ITM</th>
                 <th>Put Exits</th>
                 <th>Call Itm</th>
                 <th>Call Exits</th>
-                <th>Put Call Ratio</th>
+                <th>Put Call Ratio</th> {% endcomment %}
             </tr>
         </thead>
         <tbody>
@@ -55,23 +59,29 @@ setTimeout(function () {
                 <td>{{i.call_itm}}</td>
                 <td>{{i.put_itm}}</td>
                 <td>{{i.expiry_date}}</td>
-                <td>{{i.oi_label}}</td>
+                {% comment %} <td>{{i.oi_label}}</td>
                 <td>{{i.put_itm_val}}</td>
                 <td>{{i.put_exits_label}}</td>
                 <td>{{i.call_itm_val}}</td>
                 <td>{{i.call_exits_label}}</td>
-                <td>{{i.put_call_ratio}}</td>
+                <td>{{i.put_call_ratio}}</td> {% endcomment %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 <br>
-
-{% comment %} <div class="table-responsive">
+<center>
+    <a class="btn btn-danger" href="/option_chain_analyzer/delete_old_records" onclick="return confirm('Are You Sure?')">Delete old records</a>
+    <a class="btn btn-primary" href="/option_chain_analyzer/download_exel" onclick="return confirm('Are You Sure?')">Download exel file</a>
+</center>
+</br>
+<div class="table-responsive">
     <table id="example1" class="table table-hover display">
         <thead>
             <tr style="color:#034C65">
+                <th>Index</th>
+                <th>Time</th>
                 <th>Open Interest</th>
                 <th>Put ITM</th>
                 <th>Put Exits</th>
@@ -81,22 +91,20 @@ setTimeout(function () {
             </tr>
         </thead>
         <tbody>
-            {% for i in chart %}
+            {% for j in chart %}
             <tr>
-                <td>{{i.oi_label}}</td>
-                <td>{{i.put_itm_val}}</td>
-                <td>{{i.put_exits_label}}</td>
-                <td>{{i.call_itm_val}}</td>
-                <td>{{i.call_exits_label}}</td>
-                <td>{{i.put_call_ratio}}</td>
+                <td>{{j.index}}</td>
+                <td>{{j.str_current_time}}</td>
+                <td>{{j.oi_label}}</td>
+                <td>{{j.put_itm_val}}</td>
+                <td>{{j.put_exits_label}}</td>
+                <td>{{j.call_itm_val}}</td>
+                <td>{{j.call_exits_label}}</td>
+                <td>{{j.put_call_ratio}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</div> {% endcomment %}
-<center>
-<a class="btn btn-danger" href="/option_chain_analyzer/delete_old_records" onclick="return confirm('Are You Sure?')">Delete old records</a>
-<a class="btn btn-primary" href="/option_chain_analyzer/download_exel" onclick="return confirm('Are You Sure?')">Download exel file</a>
+</div>
 <br>
-<br />
 {% endblock body %}

@@ -1,4 +1,5 @@
-{% extends "Navbar.html" %} {% load static %} {% block body %}
+{% extends "Navbar.html" %} {% load static %}
+{% block body %}
 <section
 class="h-100"
 style="background-image: linear-gradient(to bottom, #053359, #ff99cc)"
@@ -35,61 +36,6 @@ style="background-image: linear-gradient(to bottom, #053359, #ff99cc)"
                       action="/option_chain_analyzer/enter_expiry_date"
                     >
                       {% csrf_token %}
-                      {% comment %} <div class="d-flex flex-row align-items-center mb-4">
-                        <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="form3Example2c"
-                            >Select Mode:</label
-                          >
-                          <select
-                            id="form3Example2c"
-                            name="mode"
-                            required
-                            class="form-control"
-                            onclick=indexvsStock()
-                          >
-                            <option value="Index" selected >Index</option>
-                            <option value="Stock" >Stock</option>
-                          </select>
-                        </div>
-                      </div> {% endcomment %}
-
-                      {% comment %} <div class="d-flex flex-row align-items-center mb-4">
-                        <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="form3Example4c"
-                            >Index:</label
-                          >
-                          <select
-                            id="form3Example4c"
-                            name="choseindex"
-                            class="form-control"
-                          >
-                            <option value="NIFTY">NIFTY</option>
-                            <option value="BANKNIFTY" selected>BANKNIFTY</option>
-                            <option value="FINNIFTY">FINNIFTY</option>
-                            <option value="MIDCPNIFTY">MIDCPNIFTY</option>
-                            <option value="NIFTYNXT50">NIFTYNXT50</option>
-                          </select>
-                        </div>
-                      </div> {% endcomment %}
-
-                      {% comment %} <div class="d-flex flex-row align-items-center mb-4">
-                        <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="form3Example3c"
-                            >Strike price:</label
-                          >
-                          <input type='number' id="form3Example3c" name="strikePrice" class="form-control" required/>
-                        </div>
-                    </div> {% endcomment %}
-
-                      {% comment %} <div class="d-flex flex-row align-items-center mb-4">
-                        <div class="form-outline flex-fill mb-0">
-                          <label class="form-label" for="form3Example1c"
-                            >Expiry Date:</label
-                          >
-                          <input type="date" class="form-label" id="form3Example1c" name="exp_date">
-                        </div>
-                      </div> {% endcomment %}
-                    
                       <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="form3Example9c"
