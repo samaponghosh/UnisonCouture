@@ -1,16 +1,24 @@
 {% extends "Navbar.html" %}
 {% load static %}
 {% block head %}
-<script>
+{% comment %} <script>
 setTimeout(function () {
     location.href = "/option_chain_analyzer/result";
-}, 20000);
+}, 25000);
+</script> {% endcomment %}
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable( {
+            "pagingType": "full_numbers"
+        } );
+    } );
 </script>
 <script>
-    onbeforeunload = function() {alert(",kbjl");
-    window.location.href = "/option_chain_analyzer/delete_old_records_go_home" };
-    {% comment %} window.history.go(1); {% endcomment %}
-    {% comment %} window.location.replace("/option_chain_analyzer/delete_old_records") {% endcomment %}
+    function redirectToResultPage() {
+        setTimeout(function () {
+            location.href = "/option_chain_analyzer/result";
+        }, 5000);
+    }
 </script>
 {% endblock head %}
 {% block body %}
@@ -22,8 +30,8 @@ setTimeout(function () {
     {{message}}
 </div>
 {% endfor %} {% endif %}
-<div class="table-responsive">
-    <table id="example" class="table table-hover display">
+<div class="table-responsive" onload="redirectToResultPage()">
+    <table id="example" class="display table table-hover display" width="100%" cellspacing="0">
         <thead>
             <tr style="color:#034C65">
                 <th>Time</th>

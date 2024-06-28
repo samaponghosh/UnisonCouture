@@ -44,11 +44,15 @@ def optionChainAna(request):
         if request.method == 'POST':
             # global sp_entry
             # global indexer
-            global option_mode
+            # global option_mode
             sp_entry = request.POST.get('strikePrice')
             sp_entry = int(sp_entry)
             indexer = request.POST.get('choseindex')
             option_mode = "Index"
+            query_datetime = datetime.now()
+            query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
+            # query_datetime = datetime.strptime(query_datetime, "%Y-%m-%d").strftime("%d-%b-%Y")
+            print(query_datetime, option_mode, uname, indexer, sp_entry)
             # units_str: str = 'in K' if option_mode == 'Index' else 'in 10s'
             # csv_headers: Tuple[str, str, str, str, str, str, str, str, str] = (
             # 'Time', 'Value', f'Call Sum ({units_str})', f'Put Sum ({units_str})',
@@ -60,12 +64,11 @@ def optionChainAna(request):
             # print(expiry_date)
 
             # export_row(None)
-            print(option_mode)
             try:
                 # messages.success(request, "workn")
                 # export_row(index,sp_entry,option_mode,expiry_date,csv_headers, stock=None)
-                NSEOptionChainAnalyzer.objects.create(uname = uname, index = indexer, sp_entry = sp_entry)
-                print(indexer, sp_entry, uname)
+                UserInputs.objects.create(uname = uname, index = indexer, sp_entry = sp_entry, option_mode = option_mode, query_datetime = query_datetime)
+                # print(indexer, sp_entry, uname)
                 return HttpResponseRedirect("/option_chain_analyzer/enter_expiry_date")
             except ValueError as err:
                 messages.error(request, "Incorrect Strike Price.\nPlease enter correct Strike Price.")
@@ -78,6 +81,33 @@ def optionChainAna(request):
         messages.error(request, 'You have to login first to use this feature')
         return HttpResponseRedirect("/login")
     
+def optionChainAnaExpDate(request):
+    if request.user.is_authenticated:
+        uname = request.user.username
+        query_datetime = datetime.now()
+        query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
+        get_data_first_run(uname, query_datetime)
+        if request.method == 'POST':
+            global expiry_date
+            expiry_date = request.POST.get('exp_date')
+            # expiry_date= datetime.strptime(expiry_date, "%Y-%m-%d").strftime("%d-%b-%Y")
+            # print(type(expiry_date),expiry_date)
+            # expiry_date = str(expiry_date)
+            # print(type(expiry_date),expiry_date)
+            try:
+                UserInputs.objects.filter(query_datetime = query_datetime).update(expiry_date = expiry_date)
+                return HttpResponseRedirect("/option_chain_analyzer/result")
+            except:
+                messages.error(request, "Incorrect Strike Price.\nPlease enter correct Strike Price.")
+                
+        index_name = UserInputs.objects.filter(query_datetime = query_datetime).values('index').last()
+        index_name = index_name['index']
+        exp = IndexExpDates.objects.filter(index = index_name)
+        return render(request, 'optionFormWithExp.html', {"exp":exp} )
+    else:
+        messages.error(request, 'You have to login first to use this feature')
+        return HttpResponseRedirect("/login")
+    
 def optionChainAnaStock(request):
     if request.user.is_authenticated:
         get_symbols()
@@ -85,15 +115,17 @@ def optionChainAnaStock(request):
         if request.method == 'POST':
             # global sp_entry
             # global indexer
-            global option_mode
+            # global option_mode
             sp_entry = request.POST.get('strikePrice')
             sp_entry = int(sp_entry)
             indexer = request.POST.get('choseindex')
             option_mode = "Stock"
+            query_datetime = datetime.now()
+            query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
             print(option_mode)
             try:
-                NSEOptionChainAnalyzer.objects.create(uname = uname, index = indexer, sp_entry = sp_entry)
-                print(indexer, sp_entry, uname)
+                UserInputs.objects.create(uname = uname, index = indexer, sp_entry = sp_entry, option_mode = option_mode, query_datetime = query_datetime)
+                # print(indexer, sp_entry, uname)
                 return HttpResponseRedirect("/option_chain_analyzer/stock/enter_expiry_date")
             except ValueError as err:
                 messages.error(request, "Incorrect Strike Price.\nPlease enter correct Strike Price.")
@@ -107,35 +139,12 @@ def optionChainAnaStock(request):
         messages.error(request, 'You have to login first to use this feature')
         return HttpResponseRedirect("/login")
     
-def optionChainAnaExpDate(request):
-    if request.user.is_authenticated:
-        uname = request.user.username
-        get_data_first_run(uname)
-        if request.method == 'POST':
-            global expiry_date
-            expiry_date = request.POST.get('exp_date')
-            # expiry_date= datetime.strptime(expiry_date, "%Y-%m-%d").strftime("%d-%b-%Y")
-            # print(type(expiry_date),expiry_date)
-            # expiry_date = str(expiry_date)
-            # print(type(expiry_date),expiry_date)
-            try:
-                NSEOptionChainAnalyzer.objects.filter(uname = uname).update(expiry_date = expiry_date)
-                return HttpResponseRedirect("/option_chain_analyzer/result")
-            except:
-                messages.error(request, "Incorrect Strike Price.\nPlease enter correct Strike Price.")
-                
-        index_name = NSEOptionChainAnalyzer.objects.filter(uname = uname).values('index').last()
-        index_name = index_name['index']
-        exp = IndexExpDates.objects.filter(index = index_name)
-        return render(request, 'optionFormWithExp.html', {"exp":exp} )
-    else:
-        messages.error(request, 'You have to login first to use this feature')
-        return HttpResponseRedirect("/login")
-
 def optionChainAnaExpDateStock(request):
     if request.user.is_authenticated:
+        query_datetime = datetime.now()
+        query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
         uname = request.user.username
-        get_data_first_run(uname)
+        get_data_first_run(uname, query_datetime)
         if request.method == 'POST':
             # global expiry_date
             expiry_date = request.POST.get('exp_date')
@@ -144,12 +153,12 @@ def optionChainAnaExpDateStock(request):
             # expiry_date = str(expiry_date)
             # print(type(expiry_date),expiry_date)
             try:
-                NSEOptionChainAnalyzer.objects.filter(uname = uname).update(expiry_date=expiry_date)
+                UserInputs.objects.filter(uname = uname).update(expiry_date=expiry_date)
                 return HttpResponseRedirect("/option_chain_analyzer/result")
             except:
                 messages.error(request, "Incorrect Strike Price.\nPlease enter correct Strike Price.")
                 
-        stock_name = NSEOptionChainAnalyzer.objects.filter(uname = uname).values('index').last()
+        stock_name = UserInputs.objects.filter(uname = uname).values('index').last()
         stock_name = stock_name['index']
         print(stock_name)
         exp = IndexExpDates.objects.filter(index = stock_name)
@@ -162,14 +171,20 @@ def optionChainAnaResult(request):
     if request.user.is_authenticated:
     # global uname
         uname = request.user.username
-        if type(showRes(uname)) is str:
-            messages.error(request, showRes(uname))
+        query_datetime = datetime.now()
+        query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
+        index_name = UserInputs.objects.filter(uname = uname).values().values('index').last()
+        index_name = index_name['index']
+        option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+        option_mode = option_mode['option_mode']
+        if type(showRes(uname, query_datetime, index_name, option_mode)) is str:
+            messages.error(request, showRes(uname, query_datetime, index_name, option_mode))
             return render(request, "optionchainchart.html" )
         # elif showRes(uname)[10] is str:
         #     return render(request, "optionchainchart.html", {"chart": showRes(uname) } )
         else:
-            print(showRes(uname))
-            return render(request, "optionchainchart.html", {"chart": showRes(uname) } )
+            # print(showRes(uname, query_datetime))
+            return render(request, "optionchainchart.html", {"chart": showRes(uname, query_datetime, index_name, option_mode) } )
     else:
         messages.error(request, "You have to login first to use this feature")
         return HttpResponseRedirect('/login')
@@ -219,8 +234,8 @@ def get_symbols() -> None:
         for i in range(0,len(stocks)):
             StockOptions.objects.create(Indices = stocks[i])
         
-def showRes(uname):
-    merged_inner = main(uname)
+def showRes(uname, query_datetime, index_name, option_mode):
+    merged_inner = main(uname, query_datetime, index_name, option_mode)
     if merged_inner == 1:
         return("Incorrect Strike Price.")
     elif merged_inner == 2:
@@ -230,11 +245,14 @@ def showRes(uname):
     elif merged_inner == 4:
         return("Incorrect Expiry date")
     else:
-        sp_entry_from_db = NSEOptionChainAnalyzer.objects.filter(uname = uname).values('sp_entry')
-        sp_entry_from_db = sp_entry_from_db[0]['sp_entry']
-        index_name = NSEOptionChainAnalyzer.objects.filter(uname = uname).values('index')
-        index_name = index_name[0]['index']
-        NSEOptionChainAnalyzer.objects.get_or_create(uname = uname,index = index_name,  expiry_date = merged_inner['expiry_date'], sp_entry= sp_entry_from_db, str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], put_itm_val = merged_inner['put_itm_val'])
+        # sp_entry_from_db = UserInputs.objects.filter(uname = uname).values('sp_entry')
+        # sp_entry_from_db = sp_entry_from_db[0]['sp_entry']
+        # index_name = UserInputs.objects.filter(uname = uname).values('index')
+        # index_name = index_name[0]['index']
+        # option_mode = UserInputs.objects.filter(uname = uname).values('option_mode')
+        # option_mode = option_mode[0]['option_mode']
+        # print(sp_entry_from_db,index_name, option_mode)
+        NSEOptionChainAnalyzer.objects.get_or_create(uname = uname, index = merged_inner['index'], option_mode = merged_inner['option_mode'],  expiry_date = merged_inner['expiry_date'], sp_entry= merged_inner['sp_entry_from_db'], str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], put_itm_val = merged_inner['put_itm_val'])
         chart = NSEOptionChainAnalyzer.objects.filter(uname = uname)
         # tt = chart.values('expiry_date')
         # tt = tt['expiry_date']
@@ -263,15 +281,18 @@ def change_state():
     else:
         stop = False
 
-def get_data_first_run(uname):
+def get_data_first_run(uname, query_datetime):
         # url: str = url_index + index if option_mode == 'Index' else url_stock + stock
+    option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+    option_mode = option_mode['option_mode']
     try:
-        global round_factor
+        global round_factor  ###########################################################################
         round_factor = 1000 if option_mode == 'Index' else 10
-        # print(round_factor)
+        print(round_factor)
     except:
+        # print("279")
         return 3
-    index_name = NSEOptionChainAnalyzer.objects.filter(uname = uname).values('index').last()
+    index_name = UserInputs.objects.filter(uname = uname).values('index').last()
     # print(index_name)
     index_name = index_name['index']
     # print(index_name)
@@ -306,7 +327,7 @@ def get_data_first_run(uname):
             return 2
     else:
         json_data = {}
-        # print("308")
+        print("316")
     if json_data == {}:
             # print("///////////////////")
             # messagebox.showerror(title="Error", message="Error in fetching dates.\nPlease retry.")
@@ -317,7 +338,7 @@ def get_data_first_run(uname):
             #     # date_menu.current(0)
             # except TclError as err:
             #     print(err, sys.exc_info()[0], "3")
-        # print("allok")   
+        print("allok")   
         return response, json_data
     
     global dates
@@ -333,6 +354,7 @@ def get_data_first_run(uname):
     # except TclError:
     #     pass
     # print(dates)
+    print("350")
     return response, json_data
     
 def resetCookies(request):
@@ -340,11 +362,11 @@ def resetCookies(request):
     # get_data_refresh()
     return HttpResponseRedirect("/option_chain_analyzer/delete_old_records")
     
-def get_dataframe(uname) -> Optional[Tuple[pandas.DataFrame, str, float]]:
+def get_dataframe(uname, query_datetime) -> Optional[Tuple[pandas.DataFrame, str, float]]:
         try:
             response: Optional[requests.Response]
             json_data: Any
-            response, json_data = get_data_first_run(uname)
+            response, json_data = get_data_first_run(uname, query_datetime)
         except:
             print("349")
             return
@@ -358,6 +380,9 @@ def get_dataframe(uname) -> Optional[Tuple[pandas.DataFrame, str, float]]:
         df: pandas.DataFrame = pandas.read_json(response.text)
         df = df.transpose()
         
+        
+        print("kjbivjhvjgh",expiry_date)
+        # ex_date = NSEOptionChainAnalyzer.objects.
         # NSEOptionChainAnalyzer.objects.filter()
         ce_values: List[dict] = [data['CE'] for data in json_data['records']['data'] if
                                  "CE" in data and data['expiryDate'].lower() == expiry_date.lower()] ###############333
@@ -393,10 +418,10 @@ def get_dataframe(uname) -> Optional[Tuple[pandas.DataFrame, str, float]]:
                                 'Ask Quantity', 'Net Change', 'Last Traded Price', 'Implied Volatility',
                                 'Traded Volume', 'Change in Open Interest', 'Open Interest']
         current_time: str = df['timestamp']['records']
-        # print( current_time, points)
+        print(".....................",current_time, points)
         return merged_inner, current_time, points
     
-def set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary,p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points) -> None:
+def set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary,p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points, option_mode, index_name, sp_entry_from_db) -> None:
         # if first_run:
         #     root.title(f"NSE-Option-Chain-Analyzer - {index if option_mode == 'Index' else stock} "
         #                     f"- {expiry_date} - {sp}")
@@ -689,17 +714,17 @@ def set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max
         #     sheet.set_yview(1)
         # sheet.refresh()
         
-        output_values: Dict[Union[str, float]] = {"str_current_time" : str_current_time, "points": points, "call_sum":call_sum,
+        output_values: Dict[Union[str, float]] = {"index": index_name,"option_mode":option_mode, "str_current_time" : str_current_time, "points": points, "call_sum":call_sum,
                                                   "put_sum":put_sum,"difference": difference,
                                                   "call_boundary":call_boundary,"put_boundary": put_boundary,"call_itm": call_itm,
-                                                  "put_itm":put_itm,"expiry_date": expiry_date, "oi_label": oi_label, "put_call_ratio":put_call_ratio, "call_exits_label":call_exits_label, "call_itm_val":call_itm_val, "put_exits_label":put_exits_label,"put_itm_val":put_itm_val}
+                                                  "put_itm":put_itm,"expiry_date": expiry_date, "oi_label": oi_label, "put_call_ratio":put_call_ratio, "call_exits_label":call_exits_label, "call_itm_val":call_itm_val, "put_exits_label":put_exits_label,"put_itm_val":put_itm_val, "sp_entry_from_db":sp_entry_from_db}
         # output_values: List[Union[str, float]] = [str_current_time, points, call_sum,
         #                                           put_sum, difference,
         #                                           call_boundary, put_boundary, call_itm,
         #                                           put_itm, expiry_date] 
         return output_values
         
-def main(uname):
+def main(uname, query_datetime, index_name, option_mode):
         if stop:
             return
 
@@ -709,11 +734,13 @@ def main(uname):
             entire_oc: pandas.DataFrame
             current_time: str
             points: float
-            entire_oc, current_time, points = get_dataframe(uname)
-            # print(len(entire_oc))
+            entire_oc, current_time, points = get_dataframe(uname, query_datetime)
+            print(len(entire_oc))
+            print(points)
         except:
             ##########################
             # main(uname)
+            print("733")
             return 4
 
         str_current_time: str = current_time.split(" ")[1]
@@ -805,14 +832,18 @@ def main(uname):
         except ZeroDivisionError:
             put_call_ratio = 0
 
-        sp_entry_from_db = NSEOptionChainAnalyzer.objects.filter(uname = uname).values('sp_entry')
-        sp_entry_from_db = sp_entry_from_db[0]['sp_entry']
-        
+        sp_entry_from_db = UserInputs.objects.filter(uname = uname).values('sp_entry').last()
+        sp_entry_from_db = sp_entry_from_db['sp_entry']
+        sp_entry_from_db = int(sp_entry_from_db)
+        print(sp_entry_from_db, type(sp_entry_from_db))
+        # for i in range()
         try:
             # print(entire_oc)
             # print(entire_oc[entire_oc['Strike Price'] == sp_entry])
-            index = entire_oc[entire_oc['Strike Price'] == sp_entry_from_db].index.tolist()[0]
-            # print(index)
+            # print(entire_oc)
+            # index = entire_oc[entire_oc['Strike Price'] == sp_entry_from_db].index.tolist()[0]
+            index = int(entire_oc[entire_oc['Strike Price'] == sp_entry_from_db].index.tolist()[0])
+            print("indwefeskjv ksjv",index)
         except:
             # print(err, sys.exc_info()[0], "line 777")
             # print("Incorrect Strike Price.\nPlease enter correct Strike Price.")
@@ -873,7 +904,7 @@ def main(uname):
             put_itm = round(p6 / p7, 1)
             if put_itm == -0:
                 put_itm = 0.0
-
+        print("895")
         if stop:
             return
 
@@ -896,7 +927,7 @@ def main(uname):
         # if first_run == True:
         # first_run = False
         # print("main theke...............",first_run)
-        return (set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary, p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points))
+        return (set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary, p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points, option_mode, index_name, sp_entry_from_db))
         # if str_current_time == '15:30:00' and not stop and auto_stop \
         #         and previous_date == datetime.datetime.strptime(time.strftime("%d-%b-%Y", time.localtime()),
         #                                                              "%d-%b-%Y").date():

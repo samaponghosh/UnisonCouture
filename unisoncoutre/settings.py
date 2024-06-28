@@ -97,7 +97,7 @@ DATABASES = {
 
 # DATABASES = {
 #     'default': dj_database_url.config(
-#         default='postgresql://samchess_database_user:inK0IxMJOSOfZeedskjiebwMnYG758qo@dpg-cov2cc821fec73c1d3tg-a.singapore-postgres.render.com/samchess_database',
+#         default='postgresql://mydb_1m3z_user:MOXcAcwBElEPbKrxgZ3p74tO6ilnO4rb@dpg-cpv6pptds78s73atvci0-a.singapore-postgres.render.com/mydb_1m3z',
 #         conn_max_age=600
 #     )
 # }
