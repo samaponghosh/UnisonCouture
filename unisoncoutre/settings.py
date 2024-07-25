@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from configparser import ConfigParser
 from pathlib import Path
 import os
-import dj_database_url
+#import dj_database_url
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
