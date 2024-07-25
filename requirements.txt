@@ -1,4 +1,5 @@
 about-time==4.2.1
+absl-py==2.1.0
 advanced-ta==0.1.8
 alive-progress==1.6.2
 altair==5.3.0
@@ -6,138 +7,268 @@ altgraph==0.17.4
 anyio==4.3.0
 appdirs==1.4.4
 asgiref==3.8.1
+astunparse==1.6.3
 atomicwrites==1.4.1
+attrs==23.2.0
 backoff==2.2.1
 bcrypt==4.1.3
 beautifulsoup4==4.12.3
+#beepy==1.0.7
 blinker==1.8.2
-brotli==1.1.0
-cachecontrol==0.14.0
+Brotli==1.1.0
+CacheControl==0.14.0
 cachetools==5.3.3
+certifi==2024.2.2
+cffi==1.16.0
 chardet==5.2.0
+charset-normalizer==3.3.2
 chroma-hnswlib==0.7.3
 chromadb==0.4.10
 click==8.1.7
+colorama==0.4.6
 coloredlogs==15.0.1
+colorlog==6.8.2
 configparser==7.0.0
 contextlib2==21.6.0
+contourpy==1.2.1
+cvlib==0.2.7
+cycler==0.12.1
+Cython==3.0.10
 dateutils==0.6.12
 distlib==0.3.8
 distro==1.9.0
-dj-database-url==2.2.0
-django==5.0.6
+#dj-database-url==2.2.0
+Django==5.0.6
 django-extensions==3.2.3
 docopt==0.6.2
 et-xmlfile==1.1.0
 fastapi==0.99.1
 filelock==3.14.0
+flatbuffers==24.3.25
+fonttools==4.51.0
 frozendict==2.4.4
 fsspec==2024.5.0
 future==1.0.0
+gast==0.5.4
 gitdb==4.0.11
-gitpython==3.1.43
+GitPython==3.1.43
+google-pasta==0.2.0
 grapheme==0.6.0
+grpcio==1.63.0
 h11==0.14.0
+h5py==3.11.0
 html5lib==1.1
 httptools==0.6.1
 huggingface-hub==0.23.1
 humanfriendly==10.0
+idna==3.7
+imageio==2.34.1
 importlib-metadata==6.11.0
-importlib-resources==6.4.0
+importlib_resources==6.4.0
+imutils==0.5.4
 iniconfig==2.0.0
 ipaddr==2.2.0
-jinja2==3.1.4
+jax==0.4.28
+jaxlib==0.4.28
+Jinja2==3.1.4
 joblib==1.4.2
 jsonschema==4.22.0
 jsonschema-specifications==2023.12.1
+keras==3.3.3
+kiwisolver==1.4.5
+lazy_loader==0.4
+libclang==18.1.1
 lockfile==0.12.2
 lxml==5.2.2
+Markdown==3.6
+markdown-it-py==3.0.0
+MarkupSafe==2.1.5
+matplotlib==3.8.4
+mdurl==0.1.2
+ml-dtypes==0.3.2
 monotonic==1.6
 mplfinance==0.12.9b7
 mpmath==1.3.0
 msgpack==1.0.8
+#msvc-runtime==14.34.31931
 multitasking==0.0.11
+namex==0.0.8
+networkx==3.3
 nsetools==1.0.11
 num2words==0.5.13
+numpy==1.26.4
 onnxruntime==1.18.0
+opencv-contrib-python==4.9.0.80
 openpyxl==3.1.2
-openssl==3.0.13
+opt-einsum==3.3.0
+optree==0.11.0
 overrides==7.7.0
 packaging==23.2
 pandas==2.1.2
-pandas-ta==0.3.14b0
+pandas_ta==0.3.14b0
 peewee==3.17.5
 pefile==2023.2.7
 pep517==0.13.1
-pillow==9.5.0
-pip==24.0
+Pillow==9.5.0
 pip-chill==1.0.3
 platformdirs==4.2.2
 pluggy==1.5.0
 posthog==3.5.0
 progress==1.6
+progressbar==2.5
 protobuf==3.20.3
 psycopg2-binary==2.9.9
 pulsar-client==3.5.0
 py==1.11.0
 pyarrow==16.1.0
+pycparser==2.22
 pydantic==1.10.15
 pydeck==0.9.1
-pyinstaller-hooks-contrib==2024.6
-pympler==1.0.1
-pypika==0.48.9
-pypiwin32==223
+Pygments==2.18.0
+#pyinstaller-hooks-contrib==2024.6
+Pympler==1.0.1
+pyparsing==3.1.2
+PyPika==0.48.9
+#pypiwin32==223
 pyreadline3==3.4.1
 pytest==8.2.1
 pytest-mock==3.14.0
+python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytoml==0.1.21
 pytz==2024.1
 pytz-deprecation-shim==0.1.0.post0
-pywin32==306
+#pywin32==306
 pywin32-ctypes==0.2.2
-pyyaml==6.0.1
+PyYAML==6.0.1
 referencing==0.35.1
+requests==2.31.0
 retrying==1.3.4
+rich==13.7.1
 rpds-py==0.18.1
 schedule==1.2.2
+scikit-image==0.23.2
 scikit-learn==1.3.2
 scipy==1.11.2
-setuptools==69.5.1
+#simpleaudio==1.0.4
+six==1.16.0
 smmap==5.0.1
 sniffio==1.3.1
+sounddevice==0.4.6
 soupsieve==2.5
-sqlite==3.45.3
 sqlparse==0.5.0
 starlette==0.27.0
-streamlit==1.34.0
+#streamlit==1.26.0
 streamtologger==2017.1
 sympy==1.12
 ta==0.11.0
-ta-lib==0.4.29
+#TA-Lib @ file:///C:/Users/HP/Desktop/Screeni-py-2.22/Screeni-py-2.22/src/TA_Lib-0.4.29-cp311-cp311-win_amd64.whl#sha256=aab5075b1c6f2482c80e4561bb44b888815ca41affe519ad559ff1db9dc010f2
 tabulate==0.9.0
 tenacity==8.3.0
+tensorboard==2.16.2
+tensorboard-data-server==0.7.2
+tensorflow==2.16.1
+#tensorflow-intel==2.16.1
+tensorflow-io-gcs-filesystem==0.31.0
+termcolor==2.4.0
 threadpoolctl==3.5.0
-tk==8.6.14
+tifffile==2024.5.10
 tksheet==7.2.7
 tokenizers==0.19.1
 toml==0.10.2
 toolz==0.12.1
 tornado==6.4
+tqdm==4.66.4
+typing_extensions==4.11.0
 tzdata==2024.1
 tzlocal==4.3.1
+urllib3==2.2.1
 uvicorn==0.29.0
 validators==0.28.1
-vc==14.2
-vs2015_runtime==14.29.30133
+#vidgear==0.3.2
 watchdog==4.0.0
 watchfiles==0.21.0
 webencodings==0.5.1
 websockets==12.0
-wheel==0.43.0
+Werkzeug==3.0.3
 whitenoise==6.7.0
-win10toast==0.9
-xz==5.4.6
+#win10toast==0.9
+wrapt==1.16.0
 yfinance==0.2.32
 zipp==3.18.2
-zlib==1.2.13
+
+numpy
+appdirs
+cachecontrol
+contextlib2
+distlib
+distro
+html5lib
+ipaddr
+lockfile
+nsetools
+openpyxl
+pep517
+pip
+pip-chill
+progress
+# pyinstaller==5.6.2
+pytest-mock
+pytoml
+retrying
+scipy==1.11.2
+# ta-lib
+TA-Lib-Precompiled
+tabulate
+# yfinance==0.1.87
+yfinance==0.2.32
+alive-progress==1.6.2
+Pillow
+scikit-learn==1.3.2
+joblib
+altgraph # Installed as dependency for pyinstaller
+atomicwrites # Installed as dependency for pytest
+attrs # Installed as dependency for pytest
+certifi # Installed as dependency for requests
+chardet # Installed as dependency for requests
+colorama # Installed as dependency for pytest
+dateutils # Installed as dependency for nsetools
+et-xmlfile # Installed as dependency for openpyxl
+future # Installed as dependency for pefile
+idna # Installed as dependency for requests
+iniconfig # Installed as dependency for pytest
+lxml # Installed as dependency for yfinance
+msgpack # Installed as dependency for cachecontrol
+multitasking # Installed as dependency for yfinance
+packaging # Installed as dependency for pytest
+pandas==2.1.2 # Installed as dependency for yfinance
+pefile # Installed as dependency for pyinstaller
+pluggy # Installed as dependency for pytest
+py # Installed as dependency for pytest
+pyinstaller-hooks-contrib # Installed as dependency for pyinstaller
+pyparsing # Installed as dependency for packaging, matplotlib
+pytest # Installed as dependency for pytest-mock
+python-dateutil # Installed as dependency for dateutils, matplotlib, pandas
+pytz # Installed as dependency for dateutils, pandas
+pywin32-ctypes # Installed as dependency for pyinstaller
+requests # Installed as dependency for yfinance, cachecontrol
+setuptools # Installed as dependency for pyinstaller
+six # Installed as dependency for cycler, nsetools, packaging, retrying, python-dateutil, html5lib
+toml # Installed as dependency for pep517, pytest
+urllib3 # Installed as dependency for requests
+webencodings # Installed as dependency for html5lib
+pandas_ta
+# protobuf==3.19.6
+protobuf
+# streamlit==1.26.0
+# streamlit
+tensorflow
+chromadb==0.4.10
+mplfinance==0.12.9-beta.7
+num2words
+advanced-ta
+Django
+gunicorn
+streamtologger
+pandas
+requests
