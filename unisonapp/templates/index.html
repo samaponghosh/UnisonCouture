@@ -37,6 +37,14 @@
     <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}" />
+
+    <script>
+      window.onload = function() {
+        document.addEventListener("contextmenu", function(e) {
+          e.preventDefault();
+        }, false);
+      };
+    </script>
   </head>
   <style>
     /* Custom styles for the navbar */

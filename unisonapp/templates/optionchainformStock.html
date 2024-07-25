@@ -1,5 +1,37 @@
 {% extends "Navbar.html" %}
 {% load static %}
+{% block head %}
+<script>
+  function indexvsStock()
+  {
+    var modettype = document.getElementById("form3Example2c").value
+    console.log(modettype)
+    if (modettype == "Index")
+    {
+      window.location.href="/option_chain_analyzer/"
+      //document.getElementById('form3Example4c').innerHTML = 'hi';
+      //var dropdown = document.getElementById('form3Example4c');
+      //    dropdown.innerHTML = `
+      //        <option value="volvo">Volvo</option>
+      //        <option value="saab">Saab</option>
+       //       <option value="mercedes">Mercedes</option>
+      //        <option value="audi">Audi</option>
+       //   `;
+  
+          // Append the dropdown to the body (you can choose a different parent element)
+          //document.form3Example4c.appendChild(dropdown);
+    }
+  }
+  
+  {% comment %} function indexChosen(){	   
+      if (confirm("Are you sure?") == true) {
+        window.location.href = '/option_chain_analyzer/get_exp_dates'
+      } 
+  
+    } {% endcomment %}
+  </script>
+{% endblock head %}
+
 {% block body %}
 <section
 class="h-100"
@@ -37,7 +69,7 @@ style="background-image: linear-gradient(to bottom, #053359, #ff99cc)"
                       action="/option_chain_analyzer/stock"
                     >
                       {% csrf_token %}
-                      {% comment %} <div class="d-flex flex-row align-items-center mb-4">
+                      <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="form3Example2c"
                             >Select Mode:</label
@@ -49,12 +81,11 @@ style="background-image: linear-gradient(to bottom, #053359, #ff99cc)"
                             class="form-control"
                             onclick=indexvsStock()
                           >
-                            <option value="Index" selected >Index</option>
-                            <option value="Stock" >Stock</option>
+                            <option value="Index">Index</option>
+                            <option value="Stock" selected >Stock</option>
                           </select>
                         </div>
-                      </div> {% endcomment %}
-                      {% comment %} <input type='text' class="form-label" name="mode"/> {% endcomment %}
+                      </div>
 
                       <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
@@ -96,7 +127,14 @@ style="background-image: linear-gradient(to bottom, #053359, #ff99cc)"
                           Reset Cookies
                         </button>
                       </div>
-                      <p>Records will be updated automatically after 10 seconds</p>
+                      <div
+                        class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
+                      >
+                        <button class="btn btn-primary" onclick="window.location.href='/option_chain_analyzer/download_exel'">
+                          Download old records
+                        </button>
+                      </div>
+                      <p style="color:red"><b>Records will be updated automatically after every 50 seconds.</b></p>
                     </form>
                   </div>
                   <div

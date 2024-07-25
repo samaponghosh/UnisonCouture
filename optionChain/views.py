@@ -18,7 +18,7 @@ import time
 import json
 import random
 import string
-
+from django.db import IntegrityError
 # Create your views here.
 
 stop = False
@@ -86,7 +86,13 @@ def optionChainAnaExpDate(request):
         uname = request.user.username
         query_datetime = datetime.now()
         query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
-        get_data_first_run(uname, query_datetime)
+        try: 
+            option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+            option_mode = option_mode['option_mode']
+        except:
+            print("......///////////////////////////////")
+            return HttpResponseRedirect("/option_chain_analyzer")
+        get_data_first_run(uname, query_datetime, option_mode)
         if request.method == 'POST':
             global expiry_date
             expiry_date = request.POST.get('exp_date')
@@ -95,12 +101,12 @@ def optionChainAnaExpDate(request):
             # expiry_date = str(expiry_date)
             # print(type(expiry_date),expiry_date)
             try:
-                UserInputs.objects.filter(query_datetime = query_datetime).update(expiry_date = expiry_date)
+                UserInputs.objects.filter(uname = uname).update(expiry_date = expiry_date)
                 return HttpResponseRedirect("/option_chain_analyzer/result")
             except:
                 messages.error(request, "Incorrect Strike Price.\nPlease enter correct Strike Price.")
                 
-        index_name = UserInputs.objects.filter(query_datetime = query_datetime).values('index').last()
+        index_name = UserInputs.objects.filter(uname = uname).values('index').last()
         index_name = index_name['index']
         exp = IndexExpDates.objects.filter(index = index_name)
         return render(request, 'optionFormWithExp.html', {"exp":exp} )
@@ -144,7 +150,13 @@ def optionChainAnaExpDateStock(request):
         query_datetime = datetime.now()
         query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
         uname = request.user.username
-        get_data_first_run(uname, query_datetime)
+        try:
+            option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+            option_mode = option_mode['option_mode']
+        except:
+            print("......///////////////////////////////")
+            return HttpResponseRedirect("/option_chain_analyzer/stock")
+        get_data_first_run(uname, query_datetime, option_mode)
         if request.method == 'POST':
             # global expiry_date
             expiry_date = request.POST.get('exp_date')
@@ -173,18 +185,94 @@ def optionChainAnaResult(request):
         uname = request.user.username
         query_datetime = datetime.now()
         query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
-        index_name = UserInputs.objects.filter(uname = uname).values().values('index').last()
-        index_name = index_name['index']
-        option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
-        option_mode = option_mode['option_mode']
-        if type(showRes(uname, query_datetime, index_name, option_mode)) is str:
-            messages.error(request, showRes(uname, query_datetime, index_name, option_mode))
+        try:
+            index_name = UserInputs.objects.filter(uname = uname).values().values('index').last()
+            index_name = index_name['index']
+            option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+            option_mode = option_mode['option_mode']
+        except:
+            print("......///////////////////////////////")
+            return HttpResponseRedirect("/option_chain_analyzer")
+        try:
+            old_points = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_points').last()
+            old_points = old_points['old_points']
+            if old_points is None:
+                old_points = 0.0
+        except:
+            if old_points is None:
+                old_points = 0.0
+                
+        try:
+            old_call_sum = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_call_sum').last()
+            old_call_sum = old_call_sum['old_call_sum']
+            if old_call_sum is None:
+                old_call_sum = 0.0
+        except:
+            if old_call_sum is None:
+                old_call_sum = 0.0
+        
+        try:
+            old_put_sum = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_put_sum').last()
+            old_put_sum = old_put_sum['old_put_sum']
+            if old_put_sum is None:
+                old_put_sum = 0.0
+        except:
+            if old_put_sum is None:
+                old_put_sum = 0.0
+        
+        try:
+            old_difference = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_difference').last()
+            old_difference = old_difference['old_difference']
+            if old_difference is None:
+                old_difference = 0.0
+        except:
+            if old_difference is None:
+                old_difference = 0.0
+
+        try:
+            old_call_boundary = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_call_boundary').last()
+            old_call_boundary = old_call_boundary['old_call_boundary']
+            if old_call_boundary is None:
+                old_call_boundary = 0.0
+        except:
+            if old_call_boundary is None:
+                old_call_boundary = 0.0
+        
+        try:
+            old_put_boundary = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_put_boundary').last()
+            old_put_boundary = old_put_boundary['old_put_boundary']
+            if old_put_boundary is None:
+                old_put_boundary = 0.0
+        except:
+            if old_put_boundary is None:
+                old_put_boundary = 0.0
+                
+        try:
+            old_call_itm = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_call_itm').last()
+            old_call_itm = old_call_itm['old_call_itm']
+            if old_call_itm is None:
+                old_call_itm = 0.0
+        except:
+            if old_call_itm is None:
+                old_call_itm = 0.0   
+        
+        try:
+            old_put_itm = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_put_itm').last()
+            old_put_itm = old_put_itm['old_put_itm']
+            if old_put_itm is None:
+                old_put_itm = 0.0
+        except:
+            if old_put_itm is None:
+                old_put_itm = 0.0
+                
+        if type(showRes(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm)) is str:
+            messages.error(request, showRes(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm))
             return render(request, "optionchainchart.html" )
         # elif showRes(uname)[10] is str:
         #     return render(request, "optionchainchart.html", {"chart": showRes(uname) } )
         else:
             # print(showRes(uname, query_datetime))
-            return render(request, "optionchainchart.html", {"chart": showRes(uname, query_datetime, index_name, option_mode) } )
+            return render(request, "optionchainchart.html", {"chart": showRes(uname,old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm) } )
     else:
         messages.error(request, "You have to login first to use this feature")
         return HttpResponseRedirect('/login')
@@ -234,8 +322,8 @@ def get_symbols() -> None:
         for i in range(0,len(stocks)):
             StockOptions.objects.create(Indices = stocks[i])
         
-def showRes(uname, query_datetime, index_name, option_mode):
-    merged_inner = main(uname, query_datetime, index_name, option_mode)
+def showRes(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm):
+    merged_inner = main(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm)
     if merged_inner == 1:
         return("Incorrect Strike Price.")
     elif merged_inner == 2:
@@ -252,23 +340,172 @@ def showRes(uname, query_datetime, index_name, option_mode):
         # option_mode = UserInputs.objects.filter(uname = uname).values('option_mode')
         # option_mode = option_mode[0]['option_mode']
         # print(sp_entry_from_db,index_name, option_mode)
-        NSEOptionChainAnalyzer.objects.get_or_create(uname = uname, index = merged_inner['index'], option_mode = merged_inner['option_mode'],  expiry_date = merged_inner['expiry_date'], sp_entry= merged_inner['sp_entry_from_db'], str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], put_itm_val = merged_inner['put_itm_val'])
+        # checkExists = NSEOptionChainAnalyzer.objects.filter(str_current_time = merged_inner['str_current_time'])
+        # NSEOptionChainAnalyzer.objects.get(uname = uname, index = merged_inner['index'], option_mode = merged_inner['option_mode'],  expiry_date = merged_inner['expiry_date'], sp_entry= merged_inner['sp_entry_from_db'], str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], put_itm_val = merged_inner['put_itm_val'], old_points = merged_inner['old_points'],  old_points_color = merged_inner["old_points_color"])
+        # chart = NSEOptionChainAnalyzer.objects.filter(uname = uname)
+        # if checkExists is None:
+        if NSEOptionChainAnalyzer.objects.filter(uname = uname, index = merged_inner['index'], option_mode = merged_inner['option_mode'],
+                                                     expiry_date = merged_inner['expiry_date'], sp_entry= merged_inner['sp_entry_from_db'], 
+                                                     str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], 
+                                                     call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], 
+                                                     call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], 
+                                                     call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], 
+                                                     put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], 
+                                                     call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], 
+                                                     put_itm_val = merged_inner['put_itm_val'], old_points = merged_inner['old_points'],  
+                                                      old_call_sum = merged_inner["old_call_sum"],
+                                                     old_put_sum = merged_inner["old_put_sum"], 
+                                                     old_difference = merged_inner["old_difference"],
+                                                     old_call_boundary = merged_inner["old_call_boundary"],
+                                                     old_put_boundary = merged_inner["old_put_boundary"], old_put_boundary_color = merged_inner["old_put_boundary"],
+                                                     old_call_itm = merged_inner["old_call_itm"],
+                                                     old_put_itm = merged_inner["old_put_itm"]).exists() == False:
+            
+            NSEOptionChainAnalyzer.objects.create(uname = uname, index = merged_inner['index'], option_mode = merged_inner['option_mode'],
+                                                     expiry_date = merged_inner['expiry_date'], sp_entry= merged_inner['sp_entry_from_db'], 
+                                                     str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], 
+                                                     call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], 
+                                                     call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], 
+                                                     call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], 
+                                                     put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], 
+                                                     call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], 
+                                                     put_itm_val = merged_inner['put_itm_val'], old_points = merged_inner['old_points'],  
+                                                     old_points_color = merged_inner["old_points_color"], old_call_sum = merged_inner["old_call_sum"],old_call_sum_color = merged_inner["old_call_sum_color"],
+                                                     old_put_sum = merged_inner["old_put_sum"], old_put_sum_color = merged_inner["old_put_sum_color"], 
+                                                     old_difference = merged_inner["old_difference"], old_difference_color = merged_inner["old_difference_color"],
+                                                     old_call_boundary = merged_inner["old_call_boundary"], old_call_boundary_color = merged_inner["old_call_boundary_color"],
+                                                     old_put_boundary = merged_inner["old_put_boundary"], old_put_boundary_color = merged_inner["old_put_boundary"],
+                                                     old_call_itm = merged_inner["old_call_itm"], old_call_itm_color = merged_inner["old_call_itm_color"],
+                                                     old_put_itm = merged_inner["old_put_itm"], old_put_itm_color = merged_inner["old_put_itm_color"]
+                                                     )
         chart = NSEOptionChainAnalyzer.objects.filter(uname = uname)
         # tt = chart.values('expiry_date')
         # tt = tt['expiry_date']
         # print("................",tt)
-    return chart
+        return chart
+        # else:
+        #     NSEOptionChainAnalyzer.objects.get(uname = uname, index = merged_inner['index'], option_mode = merged_inner['option_mode'],  expiry_date = merged_inner['expiry_date'], sp_entry= merged_inner['sp_entry_from_db'], str_current_time = merged_inner['str_current_time'], points = merged_inner['points'], call_sum=merged_inner['call_sum'], put_sum=merged_inner['put_sum'], difference=merged_inner['difference'], call_boundary=merged_inner['call_boundary'], put_boundary=merged_inner['put_boundary'], call_itm=merged_inner['call_itm'], put_itm=merged_inner['put_itm'], oi_label = merged_inner['oi_label'], put_call_ratio = merged_inner['put_call_ratio'], call_exits_label = merged_inner['call_exits_label'], call_itm_val = merged_inner['call_itm_val'], put_exits_label = merged_inner['put_exits_label'], put_itm_val = merged_inner['put_itm_val'], old_points = merged_inner['old_points'],  old_points_color = merged_inner["old_points_color"])
+        #     chart = NSEOptionChainAnalyzer.objects.filter(uname = uname)
+        #     return chart
+        
+def optionChainAnaResultAjax(request):
+    if request.user.is_authenticated:
+    # global uname
+        uname = request.user.username
+        query_datetime = datetime.now()
+        query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
+        try:
+            index_name = UserInputs.objects.filter(uname = uname).values().values('index').last()
+            index_name = index_name['index']
+            option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+            option_mode = option_mode['option_mode']
+        except:
+            print("......///////////////////////////////")
+            return HttpResponseRedirect("/option_chain_analyzer")
+        try:
+            old_points = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_points').last()
+            old_points = old_points['old_points']
+            if old_points is None:
+                old_points = 0.0
+        except:
+            if old_points is None:
+                old_points = 0.0
+                
+        try:
+            old_call_sum = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_call_sum').last()
+            old_call_sum = old_call_sum['old_call_sum']
+            if old_call_sum is None:
+                old_call_sum = 0.0
+        except:
+            if old_call_sum is None:
+                old_call_sum = 0.0
+        
+        try:
+            old_put_sum = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_put_sum').last()
+            old_put_sum = old_put_sum['old_put_sum']
+            if old_put_sum is None:
+                old_put_sum = 0.0
+        except:
+            if old_put_sum is None:
+                old_put_sum = 0.0
+        
+        try:
+            old_difference = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_difference').last()
+            old_difference = old_difference['old_difference']
+            if old_difference is None:
+                old_difference = 0.0
+        except:
+            if old_difference is None:
+                old_difference = 0.0
 
-def optionChainDownloadExel(request):
-    queryset = NSEOptionChainAnalyzer.objects.filter(uname=request.user.username)
-    df = pandas.DataFrame(list(queryset.values()))
+        try:
+            old_call_boundary = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_call_boundary').last()
+            old_call_boundary = old_call_boundary['old_call_boundary']
+            if old_call_boundary is None:
+                old_call_boundary = 0.0
+        except:
+            if old_call_boundary is None:
+                old_call_boundary = 0.0
+        
+        try:
+            old_put_boundary = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_put_boundary').last()
+            old_put_boundary = old_put_boundary['old_put_boundary']
+            if old_put_boundary is None:
+                old_put_boundary = 0.0
+        except:
+            if old_put_boundary is None:
+                old_put_boundary = 0.0
+                
+        try:
+            old_call_itm = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_call_itm').last()
+            old_call_itm = old_call_itm['old_call_itm']
+            if old_call_itm is None:
+                old_call_itm = 0.0
+        except:
+            if old_call_itm is None:
+                old_call_itm = 0.0   
+        
+        try:
+            old_put_itm = NSEOptionChainAnalyzer.objects.filter(index = index_name).values('old_put_itm').last()
+            old_put_itm = old_put_itm['old_put_itm']
+            if old_put_itm is None:
+                old_put_itm = 0.0
+        except:
+            if old_put_itm is None:
+                old_put_itm = 0.0
+                
+        if type(showRes(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm)) is str:
+            messages.error(request, showRes(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm))
+            return render(request, "optionchainchart.html" )
+        # elif showRes(uname)[10] is str:
+        #     return render(request, "optionchainchart.html", {"chart": showRes(uname) } )
+        else:
+            # print(showRes(uname, query_datetime))
+            # serialized_data = {"chart": list(showRes(uname,old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm).values()) }
+            data = showRes(uname,old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm)
+            serialized_data = [{'str_current_time': item.str_current_time, 'points': item.points, 'index': item.index, 'call_sum':item.call_sum, 'put_sum':item.put_sum, 'difference':item.difference, 'call_boundary':item.call_boundary, 'put_boundary':item.put_boundary, 'call_itm':item.call_itm, "put_itm":item.put_itm, 'expiry_date':item.expiry_date, 'old_points_color':item.old_points_color, 'old_call_sum_color':item.old_call_sum_color, 'old_put_sum_color':item.old_put_sum_color, 'old_difference_color': item.old_difference_color, 'old_call_boundary_color':item.old_call_boundary_color, 'old_call_itm_color':item.old_call_itm_color, 'old_put_itm_color':item.old_put_itm_color} for item in data]
+            
+            print(type(serialized_data))
+            return JsonResponse(serialized_data, safe=False)
+            # return render(request, "optionchainchart.html", {"chart": showRes(uname,old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm) } )
+    else:
+        messages.error(request, "You have to login first to use this feature")
+        return HttpResponseRedirect('/login')
     
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="my_data.xlsx"'
+def optionChainDownloadExel(request):
+    if request.user.is_authenticated:
+        queryset = NSEOptionChainAnalyzer.objects.filter(uname=request.user.username)
+        df = pandas.DataFrame(list(queryset.values()))
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="my_data.xlsx"'
 
-    with pandas.ExcelWriter(response) as writer:
-        df.to_excel(writer, index=False, sheet_name='Sheet1')
-    return response
+        with pandas.ExcelWriter(response) as writer:
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+        return response
+    else:
+        messages.error(request, 'You have to login first to use this feature')
+        return HttpResponseRedirect("/login")
 
 # def genRanSesToken():
 # 	chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
@@ -276,15 +513,17 @@ def optionChainDownloadExel(request):
 
 def change_state():
     global stop
-    if not stop:
+    current_time = datetime.now()
+    current_time = current_time.strftime("%H:%M")
+    if current_time >= "15:31:00":
         stop = True
     else:
         stop = False
 
-def get_data_first_run(uname, query_datetime):
+def get_data_first_run(uname, query_datetime, option_mode):
         # url: str = url_index + index if option_mode == 'Index' else url_stock + stock
-    option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
-    option_mode = option_mode['option_mode']
+    # option_mode = UserInputs.objects.filter(uname = uname).values('option_mode').last()
+    # option_mode = option_mode['option_mode']
     try:
         global round_factor  ###########################################################################
         round_factor = 1000 if option_mode == 'Index' else 10
@@ -295,7 +534,7 @@ def get_data_first_run(uname, query_datetime):
     index_name = UserInputs.objects.filter(uname = uname).values('index').last()
     # print(index_name)
     index_name = index_name['index']
-    # print(index_name)
+    print(index_name)
     url: str = url_index + index_name if option_mode == 'Index' else url_stock + index_name
     # url: str = url_stock + index_name
     print(".........................",url)
@@ -358,15 +597,22 @@ def get_data_first_run(uname, query_datetime):
     return response, json_data
     
 def resetCookies(request):
-    cookies.clear()
-    # get_data_refresh()
-    return HttpResponseRedirect("/option_chain_analyzer/delete_old_records")
-    
-def get_dataframe(uname, query_datetime) -> Optional[Tuple[pandas.DataFrame, str, float]]:
+    if request.user.is_authenticated:
+        uname = request.user.username
+        query_datetime = datetime.now()
+        query_datetime = query_datetime.strftime("%Y-%m-%d %H:%M")
+        cookies.clear()
+        get_data_first_run(uname, query_datetime)
+        return HttpResponseRedirect("/option_chain_analyzer/delete_old_records")
+    else:
+        messages.error(request, 'You have to login first to use this feature')
+        return HttpResponseRedirect("/login")
+        
+def get_dataframe(uname, query_datetime, option_mode) -> Optional[Tuple[pandas.DataFrame, str, float]]:
         try:
             response: Optional[requests.Response]
             json_data: Any
-            response, json_data = get_data_first_run(uname, query_datetime)
+            response, json_data = get_data_first_run(uname, query_datetime, option_mode)
         except:
             print("349")
             return
@@ -380,7 +626,8 @@ def get_dataframe(uname, query_datetime) -> Optional[Tuple[pandas.DataFrame, str
         df: pandas.DataFrame = pandas.read_json(response.text)
         df = df.transpose()
         
-        
+        expiry_date = UserInputs.objects.filter(uname = uname).values('expiry_date').last()
+        expiry_date = expiry_date['expiry_date']
         print("kjbivjhvjgh",expiry_date)
         # ex_date = NSEOptionChainAnalyzer.objects.
         # NSEOptionChainAnalyzer.objects.filter()
@@ -421,7 +668,7 @@ def get_dataframe(uname, query_datetime) -> Optional[Tuple[pandas.DataFrame, str
         print(".....................",current_time, points)
         return merged_inner, current_time, points
     
-def set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary,p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points, option_mode, index_name, sp_entry_from_db) -> None:
+def set_values( max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary,p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points, option_mode, index_name, sp_entry_from_db, old_points, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm) -> None:
         # if first_run:
         #     root.title(f"NSE-Option-Chain-Analyzer - {index if option_mode == 'Index' else stock} "
         #                     f"- {expiry_date} - {sp}")
@@ -635,78 +882,123 @@ def set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max
         #     export_row(output_values)
 
         # last_row: int = sheet.get_total_rows() - 1
-
-        old_points = 0.0
+        # try:
+        # except IntegrityError as e:
+        # expiry_date = UserInputs.objects.filter(uname = uname).values('expiry_date').last()
+        # expiry_date = expiry_date['expiry_date']
+        old_points_color = ""
+            # print(old_points, e)
         if points == old_points:
+            # NSEOptionChainAnalyzer.objects.filter(uname = uname).update(old_points = points, old_points_color = "Noll")
             old_points = points
+            old_points_color = ""
         elif points > old_points:
+            # NSEOptionChainAnalyzer.objects.filter(uname = uname).update(old_points = points, old_points_color = "Green")
+            old_points_color = "Green"
             # sheet.highlight_cells(row=last_row, column=1, bg=green)
             old_points = points
-        else:
+        elif points < old_points:
+            # NSEOptionChainAnalyzer.objects.filter(uname = uname).update(old_points = points, old_points_color = "Red")
+            old_points_color = "Red"
             # sheet.highlight_cells(row=last_row, column=1, bg=red)
             old_points = points
-        old_call_sum = 0.0
+            
+        # old_call_sum = 0.0 ###############
+        old_call_sum_color = ""
         if old_call_sum == call_sum:
+            old_call_sum_color = ""
             old_call_sum = call_sum
         elif call_sum > old_call_sum:
             # sheet.highlight_cells(row=last_row, column=2, bg=red)
+            old_call_sum_color = "Red"
             old_call_sum = call_sum
         else:
             # sheet.highlight_cells(row=last_row, column=2, bg=green)
+            old_call_sum_color = "Green"
             old_call_sum = call_sum
-        old_put_sum = 0.0
+            
+        # old_put_sum = 0.0
+        old_put_sum_color = ""
         if old_put_sum == put_sum:
+            old_put_sum_color = ""
             old_put_sum = put_sum
         elif put_sum > old_put_sum:
             # sheet.highlight_cells(row=last_row, column=3, bg=green)
+            old_put_sum_color = "Green"
             old_put_sum = put_sum
         else:
             # sheet.highlight_cells(row=last_row, column=3, bg=red)
+            old_put_sum_color = "Red"
             old_put_sum = put_sum
-        old_difference = 0.0
+            
+        # old_difference = 0.0 ##############3
+        old_difference_color = ""
         if old_difference == difference:
+            old_difference_color = ""
             old_difference = difference
         elif difference > old_difference:
             # sheet.highlight_cells(row=last_row, column=4, bg=red)
+            old_difference_color = "Red"
             old_difference = difference
         else:
             # sheet.highlight_cells(row=last_row, column=4, bg=green)
+            old_difference_color = "Green"
             old_difference = difference
-        old_call_boundary = 0.0
+            
+        # old_call_boundary = 0.0 ##############
+        old_call_boundary_color = ""
         if old_call_boundary == call_boundary:
+            old_call_boundary_color = ""
             old_call_boundary = call_boundary
         elif call_boundary > old_call_boundary:
             # sheet.highlight_cells(row=last_row, column=5, bg=red)
+            old_call_boundary_color = "Red"
             old_call_boundary = call_boundary
         else:
             # sheet.highlight_cells(row=last_row, column=5, bg=green)
+            old_call_boundary_color = "Green"
             old_call_boundary = call_boundary
-        old_put_boundary = 0.0
+            
+        # old_put_boundary = 0.0 ###################
+        old_put_boundary_color = ""
         if old_put_boundary == put_boundary:
+            old_put_boundary_color = ""
             old_put_boundary = put_boundary
         elif put_boundary > old_put_boundary:
             # sheet.highlight_cells(row=last_row, column=6, bg=green)
+            old_put_boundary_color = "Green"
             old_put_boundary = put_boundary
         else:
             # sheet.highlight_cells(row=last_row, column=6, bg=red)
+            old_put_boundary_color = "Red"
             old_put_boundary = put_boundary
-        old_call_itm = 0.0
+            
+        # old_call_itm = 0.0 #################3
+        old_call_itm_color = ""
         if old_call_itm == call_itm:
+            old_call_itm_color = ""
             old_call_itm = call_itm
         elif call_itm > old_call_itm:
             # sheet.highlight_cells(row=last_row, column=7, bg=green)
+            old_call_itm_color = "Green"
             old_call_itm = call_itm
         else:
             # sheet.highlight_cells(row=last_row, column=7, bg=red)
+            old_call_itm_color = "Red"
             old_call_itm = call_itm
-        old_put_itm = 0.0
+            
+        # old_put_itm = 0.0 ######################33
+        old_put_itm_color = ""
         if old_put_itm == put_itm:
+            old_put_itm_color = ""
             old_put_itm = put_itm
         elif put_itm > old_put_itm:
             # sheet.highlight_cells(row=last_row, column=8, bg=red)
+            old_put_itm_color = "Red"
             old_put_itm = put_itm
         else:
             # sheet.highlight_cells(row=last_row, column=8, bg=green)
+            old_put_itm_color = "Green"
             old_put_itm = put_itm
 
         # if sheet.get_yview()[1] >= 0.9:
@@ -717,14 +1009,20 @@ def set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max
         output_values: Dict[Union[str, float]] = {"index": index_name,"option_mode":option_mode, "str_current_time" : str_current_time, "points": points, "call_sum":call_sum,
                                                   "put_sum":put_sum,"difference": difference,
                                                   "call_boundary":call_boundary,"put_boundary": put_boundary,"call_itm": call_itm,
-                                                  "put_itm":put_itm,"expiry_date": expiry_date, "oi_label": oi_label, "put_call_ratio":put_call_ratio, "call_exits_label":call_exits_label, "call_itm_val":call_itm_val, "put_exits_label":put_exits_label,"put_itm_val":put_itm_val, "sp_entry_from_db":sp_entry_from_db}
+                                                  "put_itm":put_itm,"expiry_date": expiry_date, "oi_label": oi_label, "put_call_ratio":put_call_ratio, "call_exits_label":call_exits_label, "call_itm_val":call_itm_val,
+                                                  "put_exits_label":put_exits_label,"put_itm_val":put_itm_val, "sp_entry_from_db":sp_entry_from_db, "old_points": old_points, "old_points_color": old_points_color,
+                                                  "old_put_itm":old_put_itm, "old_call_itm":old_call_itm, "old_put_boundary":old_put_boundary, "old_call_boundary":old_call_boundary,
+                                                  "old_call_sum":old_call_sum, "old_put_sum":old_call_sum, "old_difference":old_difference,
+                                                  "old_put_itm_color":old_put_itm_color, "old_call_itm_color":old_call_itm_color, "old_put_boundary_color":old_put_boundary_color,
+                                                  "old_call_boundary_color":old_call_boundary_color, "old_call_sum_color":old_call_sum_color,
+                                                  "old_put_sum_color":old_put_sum_color,"old_difference_color":old_difference_color}
         # output_values: List[Union[str, float]] = [str_current_time, points, call_sum,
         #                                           put_sum, difference,
         #                                           call_boundary, put_boundary, call_itm,
         #                                           put_itm, expiry_date] 
         return output_values
         
-def main(uname, query_datetime, index_name, option_mode):
+def main(uname, old_points, query_datetime, index_name, option_mode, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm):
         if stop:
             return
 
@@ -734,7 +1032,7 @@ def main(uname, query_datetime, index_name, option_mode):
             entire_oc: pandas.DataFrame
             current_time: str
             points: float
-            entire_oc, current_time, points = get_dataframe(uname, query_datetime)
+            entire_oc, current_time, points = get_dataframe(uname, query_datetime, option_mode)
             print(len(entire_oc))
             print(points)
         except:
@@ -927,7 +1225,7 @@ def main(uname, query_datetime, index_name, option_mode):
         # if first_run == True:
         # first_run = False
         # print("main theke...............",first_run)
-        return (set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary, p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points, option_mode, index_name, sp_entry_from_db))
+        return (set_values(max_call_oi, max_call_oi_sp, max_call_oi_2, max_call_oi_sp_2, max_put_oi, max_put_oi_sp, max_put_oi_2, max_put_oi_sp_2, call_sum, put_sum, put_call_ratio, call_boundary,p4, p5, p6, p7, put_boundary, difference, call_itm, put_itm, str_current_time, points, option_mode, index_name, sp_entry_from_db, old_points, old_call_sum, old_put_sum, old_difference, old_call_boundary, old_put_boundary, old_call_itm, old_put_itm))
         # if str_current_time == '15:30:00' and not stop and auto_stop \
         #         and previous_date == datetime.datetime.strptime(time.strftime("%d-%b-%Y", time.localtime()),
         #                                                              "%d-%b-%Y").date():

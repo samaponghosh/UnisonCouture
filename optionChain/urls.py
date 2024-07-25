@@ -5,6 +5,7 @@ urlpatterns = [
     path('', optionChainAna, name='home'),
     path('stock', optionChainAnaStock, name='stock'),
     path('result', optionChainAnaResult, name='result'),
+    path('resultAJAX', optionChainAnaResultAjax, name='resultAJAX'),
     path('refresh', resetCookies, name="refresh"),
     path('delete_old_records',  optionChainAnaResultDel, name="delete_old_records"),
     path('enter_expiry_date',  optionChainAnaExpDate, name="enter_expiry_date"),

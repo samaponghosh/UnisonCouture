@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unison Couture</title>
+  <link rel="icon" type="image/x-icon" href="{% static "imgs/unisonCopy.ico" %}">
+
+  <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}" />
+  
+  <script
+    src="https://kit.fontawesome.com/cb792c0850.js"
+    crossorigin="anonymous"
+  ></script>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+  /> 
+  
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+  <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+	$(document).ready(function() {
+		$('#chart-table').DataTable( {
+			"pagingType": "full_numbers"
+		} );
+	} );
+</script>
+</head>
+<body>
+  <div class="table-responsive">
+    <table id="chart-table" class="display table table-hover display" width="100%" cellspacing="0">
+        <thead>
+          <tr style="color:#FCC9C4">
+            <th>Time</th>
+            <th>Value</th>
+            <th>Index</th>
+            <th>Call Sum in K</th>
+            <th>Put Sum in K</th>
+            <th>Difference in K</th>
+            <th>Call Boundary</th>
+            <th>Put Boundary</th>
+            <th>Call ITM</th>
+            <th>Put ITM</th>
+            <th>Expiry Date</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+  </div>
+<script>
+      function fetchData(){
+      //document.addEventListener('DOMContentLoaded', () => {
+        fetch('/option_chain_analyzer/resultAJAX') // Replace with your API endpoint
+            .then(response => response.json())
+            .then(data => {
+              console.log(data)
+                //const chartData = data.chart;
+                const tableBody = document.querySelector('#chart-table tbody');
+                tableBody.innerHTML = "";
+
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="text-align: center;border:2.5px solid white;">${item.str_current_time}</td>
+                        ${item.old_points_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.points}</td>` : item.old_points_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.points}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.points}</td>`}
+				                <td style="text-align: center;border:2.5px solid white;">${item.index}</td>
+                        ${item.old_call_sum_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_sum}</td>` : item.old_call_sum_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_sum}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_sum}</td>`}
+                        ${item.old_put_sum_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_sum}</td>` : item.old_put_sum_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_sum}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_sum}</td>`}
+                        ${item.old_difference_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.difference}</td>` : item.old_difference_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.difference}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.difference}</td>`}
+                        ${item.old_call_boundary_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_boundary}</td>` : item.old_call_boundary_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_boundary}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_boundary}</td>`}
+                        ${item.old_put_boundary_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_boundary}</td>` : item.old_put_boundary_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_boundary}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_boundary}</td>`}
+                        ${item.old_call_itm_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_itm}</td>` : item.old_call_itm_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_itm}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.call_itm}</td>`}
+                        ${item.old_put_itm_color === 'Green' ? `<td style="background:#86FF13;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_itm}</td>` : item.old_put_itm_color === 'Red' ? `<td style="background:#F1301D;border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_itm}</td>` : `<td style="border:2.5px solid white;text-align: center;border:2.5px solid white;">${item.put_itm}</td>`}
+                        <td style="text-align: center;border:2.5px solid white;">${item.expiry_date}</td>
+                    `;
+                    //
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    //});
+  }
+      fetchData();
+      let now = new Date();
+	    let hours = now.getHours();
+	    let minutes = now.getMinutes();
+	    let currentTime = hours * 60 + minutes;
+	    if (currentTime < 931 && currentTime > 550)
+      {
+        setInterval(fetchData, 50000);
+      }
+    </script>
+  </body>
+</html>

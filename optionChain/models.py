@@ -23,7 +23,23 @@ class NSEOptionChainAnalyzer(models.Model):
     call_itm_val = models.CharField(max_length=10, null=True) 
     put_exits_label = models.CharField(max_length=10, null=True)
     put_itm_val = models.CharField(max_length=10, null=True)
-
+    old_points = models.FloatField(null=True)
+    old_points_color = models.CharField(max_length=10, null = True)
+    old_call_sum = models.FloatField(null=True)
+    old_call_sum_color = models.CharField(max_length=10, null = True)
+    old_put_sum = models.FloatField(null=True) 
+    old_put_sum_color = models.CharField(max_length=10, null = True)
+    old_difference = models.FloatField(null=True) 
+    old_difference_color = models.CharField(max_length=10, null = True)
+    old_call_boundary = models.FloatField(null=True) 
+    old_call_boundary_color =models.CharField(max_length=10, null = True)
+    old_put_boundary = models.FloatField(null=True) 
+    old_put_boundary_color = models.CharField(max_length=10, null = True)
+    old_call_itm = models.FloatField(null=True) 
+    old_call_itm_color = models.CharField(max_length=10, null = True)
+    old_put_itm = models.FloatField(null=True)
+    old_put_itm_color = models.CharField(max_length=10, null = True)
+    
     def get_id(self):
         return self.id
     
