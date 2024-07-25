@@ -545,6 +545,8 @@ def get_data_first_run(uname, query_datetime, option_mode):
         session = requests.Session()
         request = session.get(url_oc, headers=headers, timeout=120)
         cookies = dict(request.cookies)
+        if cookies:
+            print("549 cookies good")
         response = session.get(url, headers=headers, timeout=120, cookies=cookies)
     except:
         print("Timeout err 550 line")
