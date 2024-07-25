@@ -541,10 +541,13 @@ def get_data_first_run(uname, query_datetime, option_mode):
     
     # session.close()
     # cookies.clear()
-    session = requests.Session()
-    request = session.get(url_oc, headers=headers, timeout=10)
-    cookies = dict(request.cookies)
-    response = session.get(url, headers=headers, timeout=10, cookies=cookies)
+    try:
+        session = requests.Session()
+        request = session.get(url_oc, headers=headers, timeout=120)
+        cookies = dict(request.cookies)
+        response = session.get(url, headers=headers, timeout=120, cookies=cookies)
+    except:
+        print("Timeout err 550 line")
     # if response.status_code == 401:
     #     session.close()
     #     cookies.clear()
