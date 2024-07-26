@@ -27,7 +27,7 @@ from unisonapp.screenipy import main
 
 
 try:
-	proxyServer = urllib.request.getproxies()['https']
+	proxyServer = urllib.request.getproxies()['http']
 except KeyError:
 	proxyServer = ""
 	
@@ -130,6 +130,7 @@ def nifty_predict(request):
 			data=fetcher.fetchLatestNiftyDaily(proxyServer=proxyServer), 
 			proxyServer=proxyServer
 		)
+		print(".....................",trend)
 		if 'BULLISH' in trend:
 			messages.success(request, f'Market may Open **Gap Up** next day!\n\nProbability/Strength of Prediction = {confidence} %')
 		elif 'BEARISH' in trend:

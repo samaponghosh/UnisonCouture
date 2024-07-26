@@ -655,6 +655,7 @@ class tools:
         print(colorText.BOLD + colorText.BLUE + "\n" + "[+] Nifty AI Prediction -> " + colorText.END + "Probability/Strength of Prediction = {}%".format(Utility.tools.getSigmoidConfidence(pred[0])))
         if isGui():
             return pred, 'BULLISH' if pred <= 0.5 else 'BEARISH', Utility.tools.getSigmoidConfidence(pred[0]), pd.DataFrame(datacopy.iloc[-1]).T
+        print(pred)
         return pred
 
     def monitorFiveEma(self, proxyServer, fetcher, result_df, last_signal, risk_reward = 3):
