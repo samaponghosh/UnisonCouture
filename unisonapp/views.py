@@ -27,7 +27,7 @@ from unisonapp.screenipy import main
 
 
 try:
-	proxyServer = urllib.request.getproxies()['http']
+	proxyServer = urllib.request.getproxies()['https']
 except KeyError:
 	proxyServer = ""
 	
