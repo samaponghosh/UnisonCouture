@@ -301,12 +301,12 @@ def get_symbols() -> None:
         try:
             request: requests.Response = session.get(url_oc, headers=headers, timeout=10)
             cookies = dict(request.cookies)
-            response: requests.Response = session.get(url_symbols, headers=headers, timeout=10,
-                                                           cookies=cookies)
+            response: requests.Response = session.get(url_symbols, headers=headers, timeout=10, cookies=cookies)
         except Exception as err:
             # print(err, sys.exc_info()[0], "19")
             # create_error_window(window)
             # sys.exit()
+            print("line 309")
             return
         try:
             json_data: Dict[str, Dict[str, List[Dict[str, Union[str, int]]]]] = response.json()
