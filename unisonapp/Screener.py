@@ -653,10 +653,10 @@ class tools:
             print(colorText.BOLD + colorText.WARN + "Note: The AI prediction should be executed After 3 PM Around the Closing hours as the Prediction Accuracy is based on the Closing price!" + colorText.END)
         print(colorText.BOLD + colorText.BLUE + "\n" + "[+] Nifty AI Prediction -> " + colorText.END + colorText.BOLD + "Market may Open {} next day! {}".format(out, sug) + colorText.END)
         print(colorText.BOLD + colorText.BLUE + "\n" + "[+] Nifty AI Prediction -> " + colorText.END + "Probability/Strength of Prediction = {}%".format(Utility.tools.getSigmoidConfidence(pred[0])))
-        if isGui():
-            return pred, 'BULLISH' if pred <= 0.5 else 'BEARISH', Utility.tools.getSigmoidConfidence(pred[0]), pd.DataFrame(datacopy.iloc[-1]).T
-        print(pred)
-        return pred
+        # if isGui():
+        return pred, 'BULLISH' if pred <= 0.5 else 'BEARISH', Utility.tools.getSigmoidConfidence(pred[0]), pd.DataFrame(datacopy.iloc[-1]).T
+        # print(pred)
+        # return pred
 
     def monitorFiveEma(self, proxyServer, fetcher, result_df, last_signal, risk_reward = 3):
         col_names = ['High', 'Low', 'Close', '5EMA']
