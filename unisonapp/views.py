@@ -139,9 +139,10 @@ def nifty_predict(request):
 		messages.warning(request,'The AI prediction should be executed After 3 PM or Around the Closing hours as the Prediction Accuracy is based on the Closing price!\n\nThis is Just a Statistical Prediction and There are Chances of **False** Predictions!')
 		messages.info(request,"Machine Learning model uses Nifty, Crude and Gold Historical prices to Predict the Gap!")
 		messages.info(request,"**Following data is used to make above prediction:**")
-		df_html = data_used.to_html(classes="table table-striped")
-		context = {'df_html': df_html}
-		return render(request, 'GapPredict.html', context)
+		# df_html = data_used.to_html(classes="table table-striped")
+		# context = {'df_html': df_html}
+  		#return render(request, 'GapPredict.html', context)
+		return render(request, 'GapPredict.html')
 	else:
 		messages.error(request,"You have to login first to use the service")
 		return HttpResponseRedirect('/login')
