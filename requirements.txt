@@ -23,7 +23,7 @@ cffi==1.16.0
 chardet==5.2.0
 charset-normalizer==3.3.2
 #chroma-hnswlib==0.7.3
-chromadb==0.4.10
+#chromadb==0.4.10
 click==8.1.7
 colorama==0.4.6
 coloredlogs==15.0.1
@@ -98,7 +98,7 @@ nsetools==1.0.11
 num2words==0.5.13
 numpy==1.26.4
 onnxruntime==1.18.0
-opencv-contrib-python==4.9.0.80
+#opencv-contrib-python==4.9.0.80
 openpyxl==3.1.2
 opt-einsum==3.3.0
 optree==0.11.0
