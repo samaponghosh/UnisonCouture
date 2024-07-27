@@ -22,8 +22,8 @@ certifi==2024.2.2
 cffi==1.16.0
 chardet==5.2.0
 charset-normalizer==3.3.2
-#chroma-hnswlib==0.7.3
-#chromadb==0.4.10
+chroma-hnswlib==0.7.3
+chromadb==0.4.10
 click==8.1.7
 colorama==0.4.6
 coloredlogs==15.0.1
@@ -218,7 +218,7 @@ pytoml
 retrying
 scipy==1.11.2
 # ta-lib
-#TA-Lib-Precompiled
+TA-Lib-Precompiled
 tabulate
 # yfinance==0.1.87
 yfinance==0.2.32
