@@ -1,131 +1,209 @@
 {% extends "Navbar.html" %}
+{% load static %}
 {% comment %} {% include risk_rs %} {% endcomment %}
 {% block body %}
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-image: linear-gradient(to bottom,#053359, #ff99cc)
-  }
-  .container {
-    max-width: 500px;
-    {% comment %} margin-left: 100px; {% endcomment %}
-    {% comment %} margin-top: 1em; {% endcomment %}
-    padding: 1.5em;
-    border: 3px dotted #6AC022;
-    border-radius: 5px;
-  }
-  input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  button {
-    width: 50%;
-    padding: 10px;
-    border: none;
-    background-color: #5cb85c;
-    color: white;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #EDEA8E;
-  }
-  .result {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
-  }
-  .container label
-  {
-    color: white;
-    font-size: 18px;
-    font-family: 
-  }
-</style>
-
 <script>
-    function calculateRisk()
-    {
-        var capi = document.getElementById('capitalSize').value;
-        var riskper = document.getElementById('riskOnCapital').value;
-        var cal_risk = capi * (riskper/100.0)
-        document.getElementById('result').innerHTML = 'Your Risk for this trade is Rs: ' + cal_risk.toFixed(2);
-        console.log(cal_risk)
-        return cal_risk
-    }
-    function calculateRiskSL()
-    {
-        var price = document.getElementById('entryPrice').value;
-        var percentage_sl = document.getElementById('SLper').value;
-        var actual_sl = Math.round(price * (percentage_sl / 100));
-        document.getElementById('resultSL').innerHTML = 'Your SL is Rs: ' + actual_sl.toFixed(2)+' per share';
-        return actual_sl
-    }
-    {% comment %} function calculateQty()
-    {
-        var capi = document.getElementById('capitalSize').value;
-        var riskper = document.getElementById('riskOnCapital').value;
-        var sl = document.getElementById('stoplossPoints')
-        var price = document.getElementById('entryPrice').value;
-        var percentage_sl = document.getElementById('SLper').value;
-        if (sl > 0)
-        {
-            qty = Math.floor(calculateRisk()/ sl)
-        }
+  function calculateQty() {
+      const capitalInput = document.getElementById('capital');
+      const riskPercentageInput = document.getElementById('riskPercentage');
+      const stoplossInput = document.getElementById('stoploss');
+
+      const entryPriceInput = document.getElementById('entryPrice');
+      const percentageSLInput = document.getElementById('percentageSL');
+
+      const capital = parseFloat(capitalInput.value);
+      const riskPercentage = parseFloat(riskPercentageInput.value);
+      const stoploss = parseFloat(stoplossInput.value);
+
+      const entryPrice = parseFloat(entryPriceInput.value);
+      const percentageSL = parseFloat(percentageSLInput.value);
       
-        else if (price > 0 and percentage_sl > 0)
-        {
-            qty = Math.floor(calculateRisk() / calculateRiskSL())
-        }
+      var actualSL = 0.0
+      //const capital = parseFloat(prompt("Enter your capital size (in Rs.):"));
+      //const capital = document.getElementById('capitalSize').value;
+      //const riskPercentage = parseFloat(prompt("Enter the risk percentage on capital for this trade:"));
+      //const riskPercentage = document.getElementById('riskOnCapital').value;
+      //const stoploss = parseFloat(prompt("Enter the stoploss in points (Rs. per share):"));
+      //const entryPrice = parseFloat(prompt("Enter the entry price (Rs. per share):"));
+      //const percentageSL = parseFloat(prompt("Enter the stoploss percentage (SL) for this trade:"));
 
+      if (!isNaN(capital) && !isNaN(riskPercentage)) {
+          const riskRs = capital * (riskPercentage / 100);
+          document.getElementById('capresult').innerHTML = `Your risk for this trade is Rs. ${riskRs.toFixed(2)}`;
+          console.log(`Your risk for this trade is Rs. ${riskRs.toFixed(2)}`);
 
-        //var qty = Math.floor(calculateRisk()/ calculateRiskSL())
-        //document.getElementById('resultQty').innerHTML = 'Quantity: '+ qty.toFixed(2);
-    } {% endcomment %}
+          if (!isNaN(stoploss)) {
+              document.getElementById('slresult').innerHTML = `Your stoploss is ${stoploss.toFixed(2)} Rs. per share.`;
+              console.log(`Your stoploss is ${stoploss.toFixed(2)} Rs. per share.`);
+          } else if (!isNaN(entryPrice) && !isNaN(percentageSL)) {
+              actualSL = entryPrice * (percentageSL / 100);
+              document.getElementById('slresult').innerHTML = `Your stoploss is Rs. ${actualSL.toFixed(2)} per share.`;
+              console.log(`Your stoploss is Rs. ${actualSL.toFixed(2)} per share.`);
+          }
+
+          if (!isNaN(stoploss)) {
+              const qty = Math.floor(riskRs / stoploss);
+              document.getElementById('resultQty').innerHTML = `Trade this quantity to prevent excessive unplanned losses. Quantity: ${qty}, Max Loss: ${(-1 * qty * stoploss).toFixed(2)}`;
+              console.log(`Trade this quantity to prevent excessive unplanned losses. Quantity: ${qty}, Max Loss: ${(-1 * qty * stoploss).toFixed(2)}`);
+          } else if (!isNaN(entryPrice) && !isNaN(percentageSL)) {
+              const qty = Math.floor(riskRs / actualSL);
+              document.getElementById('resultQty').innerHTML = `Trade this quantity to prevent excessive unplanned losses. Quantity: ${qty}, Max Loss: ${(-1 * qty * actualSL).toFixed(2)}`;
+              console.log(`Trade this quantity to prevent excessive unplanned losses. Quantity: ${qty}, Max Loss: ${(-1 * qty * actualSL).toFixed(2)}`);
+          }
+      }
+  }
+  //calculateQty();
 </script>
 
-<div class="container">
-{% comment %} <form method="POST">
-    {% csrf_token %} {% endcomment %}
-  <label for="capitalSize">Capital Size:</label>
-  <input type="number" id="capitalSize" name="capitalSize" min="0" placeholder="Total Amount used for Trading/Investing" required>
-  
-  
-  <label for="riskOnCapital">% Risk on Capital for this trade:</label>
-  <input type="number" id="riskOnCapital" name="riskOnCapital" min="0" max="10" step="0.1" placeholder="How many percentage of your total capital you want to risk if your Stoploss hits" required>
+{% comment %} <form id="calculatorForm">
+  <label for="capital">Capital Size (in Rs.):</label>
+  <input type="number" id="capital" name="capital" min="0">
+  <br>
+  <label for="riskPercentage">% Risk on Capital for this trade:</label>
+  <input type="number" id="riskPercentage" name="riskPercentage" min="0" max="10" step="0.1">
+  <br>
+  <div class="resultQty" id="capresult"></div>
+  <br>
 
-  <button onclick="calculateRisk()">Calculate Risk</button>
-  <div class="result" id="result"></div>
-  {% comment %} <h5>Your Risk for this trade is {{risk_rsjs}}</h5> {% endcomment %}
-{% comment %} </div> {% endcomment %}
-{% comment %} <div class="container2"> {% endcomment %}
-    <label for="stoplossPoints">Stoploss in points:</label>
-    <input type="number" id="stoplossPoints" name="stoplossPoints" min="0" step="0.1" placeholder="Stoploss in Points or Rupees calculated by you" required>
+  <label for="stoploss">Stoploss in points (Rs. per share):</label>
+  <input type="number" id="stoploss" name="stoploss" min="0" step="0.1">
+  <br>
+  <div class="resultQty" id="slresult"></div>
+  <br>
+  <center>
+  <h5>--------------or---------------<h5>
     <br>
-    <center>
-        <p>--------------</p>
-    </center>
-    
-    <label for="entryPrice">Entry Price:</label>
-    <input type="number" id="entryPrice" name="entryPrice" min="0" placeholder="Entry price for Long/Short position" required>
-    
-    <label for="SL">% SL</label>
-    <input type="number" id="SLper" name="SLper" min="0" max="100" placeholder="Stoploss in %" required>
-    
-    <button onclick="calculateRiskSL()">Calculate Risk</button>
-    <div class="resultSL" id="resultSL"></div>
-    <br>
-    <label for="calculateQtys">Trade this Quantity to prevent excessive unplanned losses</label>
-    {% comment %} <button onclick="calculateQty()">Calculate Quantity</button> {% endcomment %}
-    <div class="resultQty" id="resultQty"></div>
-  {% comment %} <input type="submit" onclick="calculateLoss()" value="Submit"> {% endcomment %}
-</div>
-{% comment %} </form> {% endcomment %}
+  </center>
+  <label for="entryPrice">Entry Price:</label>
+  <input type="number" id="entryPrice" name="entryPrice" min="0">
+  <br>
 
+  <label for="percentageSL">% Risk on Capital for this trade:</label>
+  <input type="number" id="percentageSL" name="percentageSL" min="0" max="10" step="0.1">
+  <br>
 
+  <button type="button" onclick="calculateQty()">Calculate Quantity</button>
+  <div class="resultQty" id="resultQty"></div>
+</form> {% endcomment %}
 
+<section
+class="h-100"
+style="background-image: linear-gradient(to bottom, #053359, #ff99cc)"
+>
+<br>   
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-lg-12 col-xl-11">
+            <div
+              class="card text-black"
+              style="
+                border-radius: 25px;
+                box-shadow: 0 40px 80px -14px rgba(0, 0, 0, 0.9);
+                background-color: #ffffea;
+              "
+            >
+              <div class="card-body p-md-5">
+                <div class="row justify-content-center">
+                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+                      Position Size Calculator
+                    </p>
+                    {% if messages %} {% for message in messages %}
+    <div class="alert {{message.tags}} alert-dismissible" role="alert">
+      <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+        ><span aria-hidden="true">&times;</span></span
+      >
+      {{message}}
+    </div>
+    {% endfor %} {% endif %}
+                    <form class="mx-1 mx-md-4" id="calculatorForm">
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <label class="form-label" for="capital">Capital Size (in Rs.):</label>
+                          <input type="number" id="capital" name="capital" class="form-control" min="0">
+                        </div>
+                      </div>
+
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <label for="riskPercentage" class="form-label">% Risk on Capital for this trade:</label>
+                          <input type="number" id="riskPercentage" name="riskPercentage" class="form-control" min="0" max="10" step="0.1">
+                        </div>
+                      </div>
+                      
+                      <h5 style="color:green;" class="form-label" id="capresult"></h5>
+
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <label for="stoploss" class="form-label">Stoploss in points (Rs. per share):</label>
+                          <input type="number" id="stoploss" name="stoploss" class="form-control" min="0" step="0.1">
+                        </div>
+                      </div>
+
+                      <h5 class="form-label" style="color:green;" id="slresult"></h5>
+                      
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <label for="entryPrice" class="form-label">Entry Price:</label>
+                          <input type="number" class="form-control" id="entryPrice" name="entryPrice" min="0">
+                        </div>
+                      </div>
+
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <label for="percentageSL" class="form-label">% SL:</label>
+                          <input type="number" class="form-control" id="percentageSL" name="percentageSL" min="0" max="10" step="0.1">
+                        </div>
+                      </div>
+                      {% comment %} <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <label class="form-label" for="form3Example1c"
+                            >Expiry Date:</label
+                          >
+                          <input type="date" class="form-label" id="form3Example1c" name="exp_date">
+                        </div>
+                      </div> {% endcomment %}
+                    
+                      <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        {% comment %} <button type="submit" class="btn btn-primary btn-lg">
+                          Select Expiry Date
+                        </button> {% endcomment %}
+                        <button type="button" class="btn btn-primary btn-lg" onclick="calculateQty()">Calculate Quantity</button>
+                      </div>
+
+                      {% comment %} <div
+                      class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
+                      >
+                      <button onclick="window.location.href='/option_chain_analyzer/refresh'" class="btn btn-danger">
+                        Reset Cookies
+                        </button>
+                        </div>
+                        <div
+                        class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
+                        >
+                        <button class="btn btn-primary" onclick="window.location.href='/option_chain_analyzer/download_exel'">
+                          Download old records
+                          </button>
+                          </div>
+                          <p style="color:red"><b>Records will be updated automatically after every 50 seconds</b></p> {% endcomment %}
+                          <h4 class="form-label" style="color:red;" id="resultQty"></h4>
+                    </form>
+                  </div>
+                  <div
+                    class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2"
+                  >
+                    <img style="border-radius:25px;" src="{% static "imgs/posCalc.jpeg" %}" class="img-fluid" alt="Unison Couture">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      </br>
+      <br>
+    </br>
+    </div>
+    </section>
+  </div>
 {% endblock body %}

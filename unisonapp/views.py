@@ -150,17 +150,6 @@ def nifty_predict(request):
     
 def pos_calc(request):
     if request.user.is_authenticated:
-    # if request.method == 'POST':
-    #     capital = request.POST.get('capitalSize')
-    #     risk = request.POST.get('riskOnCapital')
-    #     sl = request.POST.get('stoplossPoints')
-        
-    #     capital = float(capital)
-    #     risk = float(risk)
-        
-    #     risk_rs = capital * (risk/100.0)
-    #     print(risk_rs)
-    # # return render(request, 'PosCalc.html', {'risk_rs': risk_rs})
         return render(request, 'PosCalc.html')
     else:
         messages.error(request,"You have to login first to use the service")
