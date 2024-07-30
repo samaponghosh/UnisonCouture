@@ -38,8 +38,8 @@ art = colorText.GREEN + '''
 
 ''' + colorText.END
 
-lastScreened = 'last_screened_results.pkl'
-lastScreenedUnformatted = 'last_screened_unformatted_results.pkl'
+lastScreened = 'unisonapp\last_screened_results.pkl'
+lastScreenedUnformatted = 'unisonapp\last_screened_unformatted_results.pkl'
 
 # Class for managing misc and utility methods
 
@@ -413,6 +413,6 @@ def isDocker():
     return False
 
 def isGui():
-    if 'SCREENIPY_GUI' in os.environ:
-        return True
-    return False
+    # if 'SCREENIPY_GUI' in os.environ:
+    #     return True
+    return True

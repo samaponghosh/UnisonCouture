@@ -172,7 +172,7 @@ def initExecution():
     return tickerOption, executeOption
 
 # Main function
-def main(testing=False, testBuild=False, downloadOnly=False, execute_inputs:list = [], isDevVersion=None, backtestDate=date.today()):
+def main(execute_inputs:list = [], testing=False, testBuild=False, downloadOnly=False, isDevVersion=None, backtestDate=date.today()):
     global screenCounter, screenResultsCounter, stockDict, loadedStockData, keyboardInterruptEvent, loadCount, maLength, newlyListedOnly, vectorSearch
     screenCounter = multiprocessing.Value('i', 1)
     screenResultsCounter = multiprocessing.Value('i', 0)
@@ -202,7 +202,6 @@ def main(testing=False, testBuild=False, downloadOnly=False, execute_inputs:list
     else:
         try:
             if execute_inputs != []:
-                print("noooooooooooooooooooooooooo")
                 if not configManager.checkConfigFile():
                     configManager.setConfig(ConfigManager.parser, default=True, showFileCreatedText=False)
                 try:
@@ -238,6 +237,7 @@ def main(testing=False, testBuild=False, downloadOnly=False, execute_inputs:list
                 input('')
                 main()
         print(colorText.END)
+        
     if executeOption == 5:
         if execute_inputs != []:
             minRSI, maxRSI = int(execute_inputs[2]), int(execute_inputs[3])
@@ -249,6 +249,7 @@ def main(testing=False, testBuild=False, downloadOnly=False, execute_inputs:list
             if not isGui():
                 input('')
                 main()
+                
     if executeOption == 6:
         if execute_inputs != []:
             reversalOption = int(execute_inputs[2])
@@ -261,6 +262,7 @@ def main(testing=False, testBuild=False, downloadOnly=False, execute_inputs:list
         if reversalOption is None or reversalOption == 0:
             if not isGui():
                 main()
+                
     if executeOption == 7:
         if execute_inputs != []:
             respChartPattern = int(execute_inputs[2])

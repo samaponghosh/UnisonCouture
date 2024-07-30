@@ -27,11 +27,11 @@ from unisonapp.screenipy import main
 
 
 try:
-    proxyServer = urllib.request.getproxies()['https']
+    proxyServer = urllib.request.getproxies()['http']
 except KeyError:
     proxyServer = ""
     
-execute_inputs = []
+# execute_inputs = []
 backtestDate = datetime.date.today()
 isDevVersion = None
 
@@ -117,7 +117,6 @@ def user_logout(request):
         return HttpResponseRedirect('/')
 
 
-
 def nifty_predict(request):
     if request.user.is_authenticated:
         import unisonapp.Fetcher as Fetcher
@@ -155,9 +154,8 @@ def pos_calc(request):
         messages.error(request,"You have to login first to use the service")
         return HttpResponseRedirect('/login')
 
-def on_start_button_click():
-    global execute_inputs
-    print(execute_inputs)
+def on_start_button_click(execute_inputs):
+    # print(".........................",execute_inputs)
     def dummy_call():
         try:
             main(execute_inputs=execute_inputs)
@@ -188,10 +186,12 @@ def on_start_button_click():
             del os.environ['SCREENIPY_REQ_ERROR']
             break
     t.join()
+    # sleep(3)
+    return show_df_as_result_table(execute_inputs)
 
-def show_df_as_result_table():
+def show_df_as_result_table(execute_inputs):
     try:
-        df = pd.read_pickle('last_screened_unformatted_results.pkl')
+        df = pd.read_pickle('unisonapp\last_screened_unformatted_results.pkl')
         if type(execute_inputs[0]) == str or int(execute_inputs[0]) < 15:
             df.index = df.index.map(lambda x: "https://in.tradingview.com/chart?symbol=NSE%3A" + x)
             df.index = df.index.map(lambda x: f'<a href="{x}" target="_blank">{x.split("%3A")[-1]}</a>')
@@ -212,100 +212,86 @@ def show_df_as_result_table():
         df['Stock'] = df.index
         stock_column = df.pop('Stock')  # Remove 'Age' column and store it separately
         df.insert(0, 'Stock', stock_column)
-        
-        # template = loader.get_template('result_table.html')
         context = {'df': df.to_html(escape=False, index=False, index_names=False)}
-        # return HttpResponse(template.render(context, request))
         return context
 
     except FileNotFoundError:
-        print('Last Screened results are not available at the moment')
+        # print('Last Screened results are not available at the moment')
         return ('LS')
     except Exception as e:
-        print('No Dataframe found for last_screened_results.pkl')
+        # print('No Dataframe found for last_screened_results.pkl')
         return ('ND')
 
-def get_extra_inputs(tickerOption, executeOption):
-    global execute_inputs
+def get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage ):
     if not tickerOption.isnumeric():
         execute_inputs = [tickerOption, 0, 'N']
-        # return execute_inputs
-    # elif int(tickerOption) == 0 or tickerOption is None:
-    #     # stock_codes:str = c_index.text_input('Enter Stock Code(s)', placeholder='SBIN, INFY, ITC')
-    #     execute_inputs = [tickerOption, executeOption, stock_codes.upper(), 'N']
-    #     return
-    # elif int(executeOption) >= 0 and int(executeOption) < 4:
-    #     execute_inputs = [tickerOption, executeOption, 'N']
-    # elif int(executeOption) == 4:
-    #     # num_candles = c_criteria.text_input('The Volume should be lowest since last how many candles?', value='20')
-    #     if num_candles:
-    #         execute_inputs = [tickerOption, executeOption, num_candles, 'N']
-    #     else:
-    #         c_criteria.error("Number of Candles can't be left blank!")    
-    # elif int(executeOption) == 5:
-    #     min_rsi, max_rsi = c_criteria.columns((1,1))
-    #     min_rsi = min_rsi.number_input('Min RSI', min_value=0, max_value=100, value=50, step=1, format="%d")
-    #     max_rsi = max_rsi.number_input('Max RSI', min_value=0, max_value=100, value=70, step=1, format="%d")
-    #     if min_rsi >= max_rsi:
-    #         c_criteria.warning('WARNING: Min RSI ≥ Max RSI')
-    #     else:
-    #         execute_inputs = [tickerOption, executeOption, min_rsi, max_rsi, 'N']
-    # elif int(executeOption) == 6:
-    #     c1, c2 = c_criteria.columns((7,2))
-    #     select_reversal = int(c1.selectbox('Select Type of Reversal',
-    #                         options = [
-    #                             '1 > Buy Signal (Bullish Reversal)',
-    #                             '2 > Sell Signal (Bearish Reversal)',
-    #                             '3 > Momentum Gainers (Rising Bullish Momentum)',
-    #                             '4 > Reversal at Moving Average (Bullish Reversal)',
-    #                             '5 > Volume Spread Analysis (Bullish VSA Reversal)',
-    #                             '6 > Narrow Range (NRx) Reversal',
-    #                             '7 > Lorentzian Classifier (Machine Learning based indicator)',
-    #                             '8 > RSI Crossing with 9 SMA of RSI itself'
-    #                         ]
-    #                     ).split(' ')[0])
-    #     if select_reversal == 4:
-    #         ma_length = c2.number_input('MA Length', value=44, step=1, format="%d")
-    #         execute_inputs = [tickerOption, executeOption, select_reversal, ma_length, 'N']
-    #     elif select_reversal == 6:
-    #         range = c2.number_input('NR(x)',min_value=1, max_value=14, value=4, step=1, format="%d")
-    #         execute_inputs = [tickerOption, executeOption, select_reversal, range, 'N']
-    #     elif select_reversal == 7:
-    #         signal = int(c2.selectbox('Signal Type',
-    #                         options = [
-    #                             '1 > Any',
-    #                             '2 > Buy',
-    #                             '3 > Sell',
-    #                         ]
-    #                     ).split(' ')[0])
-    #         execute_inputs = [tickerOption, executeOption, select_reversal, signal, 'N']
-    #     else:
-    #         execute_inputs = [tickerOption, executeOption, select_reversal, 'N']
-    # elif int(executeOption) == 7:
-    #     # c1, c2 = c_criteria.columns((11,4))
-    #     select_pattern = int(c1.selectbox('Select Chart Pattern',
-    #                         options = [
-    #                             '1 > Bullish Inside Bar (Flag) Pattern',
-    #                             '2 > Bearish Inside Bar (Flag) Pattern',
-    #                             '3 > Confluence (50 & 200 MA/EMA)',
-    #                             '4 > VCP (Experimental)',
-    #                             '5 > Buying at Trendline (Ideal for Swing/Mid/Long term)',
-    #                         ]
-    #                     ).split(' ')[0])
-    #     if select_pattern == 1 or select_pattern == 2:
-    #         num_candles = c2.number_input('Lookback Candles', min_value=1, max_value=25, value=12, step=1, format="%d")
-    #         execute_inputs = [tickerOption, executeOption, select_pattern, int(num_candles), 'N']
-    #     elif select_pattern == 3:
-    #         confluence_percentage = c2.number_input('MA Confluence %', min_value=0.1, max_value=5.0, value=1.0, step=0.1, format="%1.1f")/100.0
-    #         execute_inputs = [tickerOption, executeOption, select_pattern, confluence_percentage, 'N']
-    #     else:
-    #         execute_inputs = [tickerOption, executeOption, select_pattern, 'N']
+    elif int(tickerOption) == 0 or tickerOption is None:
+        execute_inputs = [tickerOption, executeOption, stock_codes, 'N']
+    elif int(executeOption) >= 0 and int(executeOption) < 4:
+        execute_inputs = [tickerOption, executeOption, 'N']
+    elif int(executeOption) == 4:
+        if num_candles is not None:
+            execute_inputs = [tickerOption, executeOption, num_candles, 'N']
+        else:
+            return HttpResponse("Number of Candles can't be left blank!", status=400)
+    elif int(executeOption) == 5:
+        if min_rsi is not None and max_rsi is not None:
+            if min_rsi >= max_rsi:
+                return HttpResponse('WARNING: Min RSI ≥ Max RSI', status=400)
+            execute_inputs = [tickerOption, executeOption, min_rsi, max_rsi, 'N']
+        else:
+            return HttpResponse("Min and Max RSI values are required!", status=400)
+    elif int(executeOption) == 6:
+        if select_reversal == '4':
+            if ma_length is not None:
+                execute_inputs = [tickerOption, executeOption, select_reversal, ma_length, 'N']
+            else:
+                return HttpResponse("MA Length can't be left blank!", status=400)
+        elif select_reversal == '6':
+            if range_value is not None:
+                execute_inputs = [tickerOption, executeOption, select_reversal, range_value, 'N']
+            else:
+                return HttpResponse("NR(x) value can't be left blank!", status=400)
+        elif select_reversal == '7':
+            if signal_type is not None:
+                execute_inputs = [tickerOption, executeOption, select_reversal, signal_type, 'N']
+            else:
+                return HttpResponse("Signal Type can't be left blank!", status=400)
+        else:
+            execute_inputs = [tickerOption, executeOption, select_reversal, 'N']
+    elif int(executeOption) == 7:
+        if select_pattern:
+            if select_pattern in ('1', '2'):
+                if num_candles is not None:
+                    execute_inputs = [tickerOption, executeOption, select_pattern, num_candles, 'N']
+                else:
+                    return HttpResponse("Lookback Candles can't be left blank!", status=400)
+            elif select_pattern == '3':
+                if confluence_percentage is not None:
+                    execute_inputs = [tickerOption, executeOption, select_pattern, confluence_percentage, 'N']
+                else:
+                    return HttpResponse("Confluence Percentage can't be left blank!", status=400)
+            else:
+                execute_inputs = [tickerOption, executeOption, select_pattern, 'N']
+        else:
+            return HttpResponse("Chart Pattern selection is required!", status=400)
+    return on_start_button_click(execute_inputs)
 
 def stockScreen(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             c_index = request.POST.get('list_index')
             c_criteria = request.POST.get('list_criteria')
+            stock_codes = request.POST.get('stock_codes')
+            num_candles = request.POST.get('num_candles')
+            min_rsi = request.POST.get('min_rsi')
+            max_rsi = request.POST.get('max_rsi')
+            select_reversal = request.POST.get('select_reversal')
+            ma_length = request.POST.get('ma_length')
+            range_value = request.POST.get('range_value')
+            signal_type = request.POST.get('signal_type')
+            select_pattern = request.POST.get('select_pattern')
+            confluence_percentage = request.POST.get('confluence_percentage')
             # c_datepick = datetime.date.today()
             # print(c_index)
             # print(c_criteria)
@@ -321,13 +307,8 @@ def stockScreen(request):
 
             executeOption = str(c_criteria).split(' ')[0]
 
-            # start_button = c_button_start.button('Start Screening', type='primary', key='start_button', use_container_width=True)
-
-            get_extra_inputs(tickerOption=tickerOption, executeOption=executeOption)
-
-            on_start_button_click()
-
-            res= show_df_as_result_table()
+            res = get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage)
+            
             if res == 'LS':
                 messages.error(request, "Last Screened results are not available at the moment")
                 return render(request, 'result_table.html')
