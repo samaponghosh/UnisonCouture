@@ -92,8 +92,8 @@ class tools:
             print(tabulate(df, headers='keys', tablefmt='psql'))
             print(colorText.BOLD + colorText.WARN +
                   "[+] Note: Trend calculation is based on number of recent days to screen as per your configuration." + colorText.END)
-            # input(colorText.BOLD + colorText.GREEN +
-            #       '[+] Press any key to continue..' + colorText.END)
+            input(colorText.BOLD + colorText.GREEN +
+                  '[+] Press any key to continue..' + colorText.END)
         except FileNotFoundError:
             print(colorText.BOLD + colorText.FAIL +
                   '[+] Failed to load recently screened result table from disk! Skipping..' + colorText.END)

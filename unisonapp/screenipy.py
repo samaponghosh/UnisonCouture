@@ -58,7 +58,7 @@ maLength = None
 newlyListedOnly = False
 vectorSearch = False
 
-CHROMADB_PATH = "unisonapp/chromadb_store/"
+CHROMADB_PATH = "unisonapp/chromadb_store"
 
 configManager = ConfigManager.tools()
 fetcher = Fetcher.tools(configManager)
@@ -172,7 +172,7 @@ def initExecution():
     return tickerOption, executeOption
 
 # Main function
-def main(execute_inputs:list = [], testing=False, testBuild=False, downloadOnly=False, isDevVersion=None, backtestDate=date.today()):
+def main(testing=False, testBuild=False, downloadOnly=False, execute_inputs:list = [], isDevVersion=None, backtestDate=date.today()):
     global screenCounter, screenResultsCounter, stockDict, loadedStockData, keyboardInterruptEvent, loadCount, maLength, newlyListedOnly, vectorSearch
     screenCounter = multiprocessing.Value('i', 1)
     screenResultsCounter = multiprocessing.Value('i', 0)
@@ -237,7 +237,6 @@ def main(execute_inputs:list = [], testing=False, testBuild=False, downloadOnly=
                 input('')
                 main()
         print(colorText.END)
-        
     if executeOption == 5:
         if execute_inputs != []:
             minRSI, maxRSI = int(execute_inputs[2]), int(execute_inputs[3])
@@ -249,7 +248,6 @@ def main(execute_inputs:list = [], testing=False, testBuild=False, downloadOnly=
             if not isGui():
                 input('')
                 main()
-                
     if executeOption == 6:
         if execute_inputs != []:
             reversalOption = int(execute_inputs[2])
@@ -262,7 +260,6 @@ def main(execute_inputs:list = [], testing=False, testBuild=False, downloadOnly=
         if reversalOption is None or reversalOption == 0:
             if not isGui():
                 main()
-                
     if executeOption == 7:
         if execute_inputs != []:
             respChartPattern = int(execute_inputs[2])
@@ -516,12 +513,12 @@ def main(execute_inputs:list = [], testing=False, testBuild=False, downloadOnly=
         Utility.tools.setLastScreenedResults(saveResults, unformatted=True)
         if not testBuild and not downloadOnly:
             Utility.tools.promptSaveResults(saveResults)
-            # print(colorText.BOLD + colorText.WARN +
-            #     "[+] Note: Trend calculation is based on number of days recent to screen as per your configuration." + colorText.END)
-            # print(colorText.BOLD + colorText.GREEN +
-            #     "[+] Screening Completed! Press Enter to Continue.." + colorText.END)
-            # if not isGui():
-            #     input('')
+            print(colorText.BOLD + colorText.WARN +
+                "[+] Note: Trend calculation is based on number of days recent to screen as per your configuration." + colorText.END)
+            print(colorText.BOLD + colorText.GREEN +
+                "[+] Screening Completed! Press Enter to Continue.." + colorText.END)
+            if not isGui():
+                input('')
         newlyListedOnly = False
         vectorSearch = False
 
