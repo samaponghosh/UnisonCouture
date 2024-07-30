@@ -324,16 +324,15 @@ def stockScreen(request):
         return HttpResponseRedirect('/login')
 
 def find_similar_stocks(stockCode:str, candles:int):
-    global execute_inputs
     stockCode = stockCode.upper()
     if ',' in stockCode or ' ' in stockCode or stockCode == '':
         # st.error('Invalid Character in Stock Name!', icon='😾')
         return False
     else:
         execute_inputs = ['S', 0, stockCode, candles, 'N']
-        on_start_button_click()
+        return on_start_button_click(execute_inputs)
         # st.toast('Screening Completed!', icon='🎉')
-    return True
+    #return True
 
 def simSearch(request):
     if request.user.is_authenticated:
@@ -343,15 +342,15 @@ def simSearch(request):
 
             result = find_similar_stocks(stockCode, candles)
             if result:
-                res = show_df_as_result_table()
-                if res == 'LS':
+                # res = show_df_as_result_table()
+                if result == 'LS':
                     messages.error(request, "Last Screened results are not available at the moment")
                     return render(request, 'result_table.html')
-                elif res == 'ND':
+                elif result == 'ND':
                     messages.error(request, "No Dataframe found for last_screened_results.pkl")
                     return render(request, 'result_table.html')
                 else:
-                    return render(request, 'result_table.html', res)
+                    return render(request, 'result_table.html', result)
         else:
             return render(request, 'simSearch.html')
     else:
