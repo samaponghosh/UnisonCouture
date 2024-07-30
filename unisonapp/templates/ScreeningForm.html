@@ -42,14 +42,32 @@
                         required
                         class="form-control"
                       >
-                        <option value="All Stocks (Default)">
-                          'All Stocks (Default)',
+                        <option value="All Stocks (Default)" selected>
+                          All Stocks (Default)
                         </option>
-                        {% comment %}
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                        {% endcomment %}
+                        <option value="0 > By Stock Names (NSE Stock Code)">0 > By Stock Names (NSE Stock Code)</option>
+                        <option value="1 > Nifty 50">1 > Nifty 50</option>
+                        <option value="2 > Nifty Next 50">2 > Nifty Next 50</option>
+                        <option value="3 > Nifty 100">3 > Nifty 100</option>
+                        <option value="4 > Nifty 200">4 > Nifty 200</option>
+                        <option value="5 > Nifty 500">5 > Nifty 500</option>
+                        <option value="6 > Nifty Smallcap 50">6 > Nifty Smallcap 50</option>
+                        <option value="7 > Nifty Smallcap 100">7 > Nifty Smallcap 100</option>
+                        <option value="8 > Nifty Smallcap 250">8 > Nifty Smallcap 250</option>
+                        <option value="9 > Nifty Midcap 50">9 > Nifty Midcap 50</option>
+                        <option value="10 > Nifty Midcap 100">10 > Nifty Midcap 100</option>
+                        <option value="11 > Nifty Midcap 150">11 > Nifty Midcap 150</option>
+                        <option value="13 > Newly Listed (IPOs in last 2 Year)">13 > Newly Listed (IPOs in last 2 Year)</option>
+                        <option value="14 > F&O Stocks Only">14 > F&O Stocks Only</option>
+                        <option value="15 > US S&P 500">15 > US S&P 500</option>
+                        <option value="16 > Sectoral Indices (NSE)">16 > Sectoral Indices (NSE)</option>
                       </select>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <div id="form3Example3c" name="stock_codes"></div>
                     </div>
                   </div>
 
@@ -64,17 +82,27 @@
                         required
                         class="form-control"
                       >
-                        <option
-                          value="0 > Full Screening (Shows Technical Parameters without Any Criteria)"
-                        >
-                          0 > Full Screening (Shows Technical Parameters without
-                          Any Criteria)
-                        </option>
-                        {% comment %}
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                        {% endcomment %}
+                        <option value="0 > Full Screening (Shows Technical Parameters without Any Criteria)" selected>0 > Full Screening (Shows Technical Parameters without Any Criteria)</option>
+                        <option value="1 > Screen stocks for Breakout or Consolidation">1 > Screen stocks for Breakout or Consolidation</option>
+                        <option value="2 > Screen for the stocks with recent Breakout & Volume">2 > Screen for the stocks with recent Breakout & Volume</option>
+                        <option value="3 > Screen for the Consolidating stocks">3 > Screen for the Consolidating stocks</option>
+                        <option value="4 > Screen for the stocks with Lowest Volume in last N-days (Early Breakout Detection)">4 > Screen for the stocks with Lowest Volume in last N-days (Early Breakout Detection)</option>
+                        <option value="5 > Screen for the stocks with RSI">5 > Screen for the stocks with RSI</option>
+                        <option value="6 > Screen for the stocks showing Reversal Signals">6 > Screen for the stocks showing Reversal Signals</option>
+                        <option value="7 > Screen for the stocks making Chart Patterns">7 > Screen for the stocks making Chart Patterns</option>
                       </select>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <div id="form3Example7c"></div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <div id="form3Example8c"></div>
                     </div>
                   </div>
 
@@ -97,5 +125,73 @@
     </div>
   </div>
 </section>
+
+<script>
+  const selectStoks = document.getElementById('form3Example2c')
+  const inputContainer = document.getElementById('form3Example3c');
+  selectStoks.addEventListener('change', function () {
+    const selectedOption = selectStoks.value;
+    inputContainer.innerHTML = '';
+    if (selectedOption === "0 > By Stock Names (NSE Stock Code)") {
+        const inputField1 = document.createElement('input');
+        inputField1.type = 'text';
+        inputField1.name = 'stock_codes';
+        inputField1.classList.add('form-control');
+        inputField1.placeholder = 'Enter stock code:'
+        inputContainer.appendChild(inputField1);
+    }
+});
+
+const selectcriteria = document.getElementById('form3Example1c')
+  const inputContainer1 = document.getElementById('form3Example7c');
+  const inputContainer2 = document.getElementById('form3Example8c');
+  selectcriteria.addEventListener('change', function () {
+    const selectedCriteria = selectcriteria.value;
+    inputContainer1.innerHTML = '';
+    inputContainer2.innerHTML = '';
+    if (selectedCriteria === "4 > Screen for the stocks with Lowest Volume in last N-days (Early Breakout Detection)"){
+        const inputField2 = document.createElement('input');
+        inputField2.type = 'number';
+        inputField2.name = 'num_candles';
+        inputField2.classList.add('form-control');
+        inputField2.placeholder = 'The Volume should be lowest since last how many candles?'
+        inputContainer1.appendChild(inputField2);
+    }
+    else if (selectedCriteria === "5 > Screen for the stocks with RSI" )
+    {
+      const inputField3 = document.createElement('input');
+        inputField3.type = 'number';
+        inputField3.name = 'min_rsi';
+        inputField3.classList.add('form-control');
+        inputField3.placeholder = 'Min RSI:'
+        inputContainer1.appendChild(inputField3);
+      const inputField4 = document.createElement('input');
+        inputField4.type = 'number';
+        inputField4.name = 'max_rsi';
+        inputField4.classList.add('form-control');
+        inputField4.placeholder = 'Max RSI:'
+        inputContainer2.appendChild(inputField4);
+    }
+    else if (selectedCriteria === "7 > Screen for the stocks making Chart Patterns" )
+    {
+      const inputField5 = document.createElement('select');
+        inputField5.innerHTML = '<option value="1 > Bullish Inside Bar (Flag) Pattern" selected>1 > Bullish Inside Bar (Flag) Pattern</option><option value="2 > Bearish Inside Bar (Flag) Pattern">2 > Bearish Inside Bar (Flag) Pattern</option><option value="3 > Confluence (50 & 200 MA/EMA)">3 > Confluence (50 & 200 MA/EMA)</option><option value="4 > VCP (Experimental)">4 > VCP (Experimental)</option><option value="5 > Buying at Trendline (Ideal for Swing/Mid/Long term)">5 > Buying at Trendline (Ideal for Swing/Mid/Long term)</option>';
+        inputField5.name = 'select_pattern';
+        inputField5.classList.add('form-control');
+        inputContainer1.appendChild(inputField5);
+      const inputField6 = document.createElement('input');
+        inputField6.type = 'number';
+        inputField6.name = 'num_candles';
+        inputField6.classList.add('form-control');
+        inputField6.placeholder = 'Look back candles:'
+        inputField6.min = '10'; 
+        inputField6.max = '25'; 
+        inputField6.step = '1';
+        inputContainer2.appendChild(inputField6);
+    }
+});
+
+
+</script>
 
 {% endblock body %}

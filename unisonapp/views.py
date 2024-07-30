@@ -155,7 +155,7 @@ def pos_calc(request):
         return HttpResponseRedirect('/login')
 
 def on_start_button_click(execute_inputs):
-    # print(".........................",execute_inputs)
+    print(".........................",execute_inputs)
     def dummy_call():
         try:
             main(execute_inputs=execute_inputs)
