@@ -5,12 +5,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Unison Couture</title>
-    <link rel="icon" type="image/x-icon" href="{% static "imgs/unisonCopy.ico" %}">
+    <link rel="icon" type="image/x-icon" href="{% static "imgs/unisonCopy.ico"
+    %}">
 
     <link rel="stylesheet" href="{% static 'css/all.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}" />
-    
+
     <script
       src="https://kit.fontawesome.com/cb792c0850.js"
       crossorigin="anonymous"
@@ -20,8 +21,7 @@
       rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
-    /> 
-    
+    />
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
@@ -29,19 +29,25 @@
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
     <script>
-      window.onload = function() {
-        document.addEventListener("contextmenu", function(e) {
-          e.preventDefault();
-        }, false);
+      window.onload = function () {
+        document.addEventListener(
+          "contextmenu",
+          function (e) {
+            e.preventDefault();
+          },
+          false
+        );
       };
     </script>
-    {% block head %}
-    {% endblock head %}
+    {% block head %} {% endblock head %}
   </head>
 
   <style>
@@ -51,7 +57,14 @@
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-      <a class="navbar-brand" style="color: white; text-shadow: 0 0 0.5em #ffffff, 0 0 0.1em #e4e3e3; font-size: 26px;" href="/"
+      <a
+        class="navbar-brand"
+        style="
+          color: white;
+          text-shadow: 0 0 0.5em #ffffff, 0 0 0.1em #e4e3e3;
+          font-size: 26px;
+        "
+        href="/"
         ><b>Unison Couture</b></a
       >
       <button
@@ -68,57 +81,104 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="/stock_screening">Stocks Screening</a>
+            <a
+              class="nav-link"
+              style="color: #fff !important"
+              href="/stock_screening"
+              >Stocks Screening</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="/position_calculator"
+            <a
+              class="nav-link"
+              style="color: #fff !important"
+              href="/position_calculator"
               >Position Size Calculator</a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff; !important" href="/screen_config">Screening Configuration</a>
+            <a
+              class="nav-link"
+              style="color: #fff; !important"
+              href="/screen_config"
+              >Screening Configuration</a
+            >
           </li>
+          {% comment %}
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="/search_similar_stocks"
+            <a
+              class="nav-link"
+              style="color: #fff !important"
+              href="/search_similar_stocks"
               >Search Similar Stocks</a
             >
           </li>
+          {% endcomment %}
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="/gap_prediction"
+            <a
+              class="nav-link"
+              style="color: #fff !important"
+              href="https://unisoncouture.onrender.com/gap_prediction"
               >Nifty-50 Gap Prediction</a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="https://drive.google.com/file/d/1X5s91VRfux4Ye59Qo2U4FzqGfTsSD_Ro/view?usp=sharing"
+            <a
+              class="nav-link"
+              style="color: #fff !important"
+              href="https://drive.google.com/file/d/1X5s91VRfux4Ye59Qo2U4FzqGfTsSD_Ro/view?usp=sharing"
               >Option Chain analyzer</a
             >
           </li>
-          {% comment %} <li class="nav-item">
-            <a class="nav-link" style="color: #fff !important;" href="/about"
+          {% comment %}
+          <li class="nav-item">
+            <a class="nav-link" style="color: #fff !important" href="/about"
               >About</a
             >
-          </li> {% endcomment %}
-          {% if request.user.is_authenticated %}
+          </li>
+          {% endcomment %} {% if request.user.is_authenticated %}
           <li class="nav-item active">
             <div id="hoverText">
-              <span title="Hi, {{request.user.username}}"><div class="fa-solid fa-user" style="color:#ffa600 !important;font-size:25px;margin-top:10px;margin-left:15px;" onclick="alert('Logged In as {{request.user.username}}')"></div></span>
+              <span title="Hi, {{request.user.username}}"
+                ><div
+                  class="fa-solid fa-user"
+                  style="
+                    color: #ffa600 !important;
+                    font-size: 25px;
+                    margin-top: 10px;
+                    margin-left: 15px;
+                  "
+                  onclick="alert('Logged In as {{request.user.username}}')"
+                ></div
+              ></span>
             </div>
           </li>
-          
+
           <li class="nav-item active">
             <div id="hoverText">
-              <span title="Logout"><div class="fa fa-sign-out" style="color:#ffa600 !important;font-size:25px;margin-top:10px;margin-left:20px;" onclick="save()"></div></span>
+              <span title="Logout"
+                ><div
+                  class="fa fa-sign-out"
+                  style="
+                    color: #ffa600 !important;
+                    font-size: 25px;
+                    margin-top: 10px;
+                    margin-left: 20px;
+                  "
+                  onclick="save()"
+                ></div
+              ></span>
             </div>
           </li>
-          
+
           {% else %}
           <li class="nav-item active">
-            <a class="nav-link" style="color:#ff6361 !important;" href="/login"
+            <a class="nav-link" style="color: #ff6361 !important" href="/login"
               >Login<span class="sr-only"></span
             ></a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" style="color:#ff6361 !important;" href="/signup"
+            <a class="nav-link" style="color: #ff6361 !important" href="/signup"
               >Signup<span class="sr-only"></span
             ></a>
           </li>
@@ -127,13 +187,12 @@
       </div>
     </nav>
     <script>
-      function save(){	   
+      function save() {
         if (confirm("Do you want to Logout?") == true) {
-          window.location.href = '/logout'
-        } 
-  
+          window.location.href = "/logout";
+        }
       }
-      </script>
+    </script>
     {% block body %} {% endblock %}
   </body>
 </html>

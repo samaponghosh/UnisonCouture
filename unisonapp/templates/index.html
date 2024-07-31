@@ -155,11 +155,11 @@
           <li class="nav-item">
             <a class="nav-link" style="color: #fff !important;" href="/screen_config">Screening Configuration</a>
           </li>
-          <li class="nav-item">
+          {% comment %} <li class="nav-item">
             <a class="nav-link" style="color: #fff !important;" href="/search_similar_stocks"
               >Search Similar Stocks</a
             >
-          </li>
+          </li> {% endcomment %}
           <li class="nav-item">
             <a class="nav-link" style="color: #fff !important;" href="/gap_prediction"
               >Nifty-50 Gap Prediction</a
@@ -295,7 +295,7 @@
             </div>
           </div>
         </li>
-        <li
+        {% comment %} <li
           class="cards_item"
           onclick="window.location.href='/search_similar_stocks';"
         >
@@ -312,7 +312,7 @@
               <button class="btn card_btn">Search</button>
             </div>
           </div>
-        </li>
+        </li> {% endcomment %}
         <li class="cards_item" onclick="window.location.href='/screen_config';">
           <div class="card">
             <div class="card_image">
@@ -419,14 +419,14 @@
                   <h3>Quick Links</h3>
                 </div>
                 <ul>
-                  <li><a href="/gap_prediction">Nifty-50 Gap Prediction</a></li>
+                  <li><a href="https://unisoncouture.onrender.com/gap_prediction">Nifty-50 Gap Prediction</a></li>
                   <li>
                     <a href="/position_calculator">Position size calculator</a>
                   </li>
                   <li><a href="/stock_screening">Stock screening</a></li>
-                  <li>
+                  {% comment %} <li>
                     <a href="/search_similar_stocks">Search similar stocks</a>
-                  </li>
+                  </li> {% endcomment %}
                   <li><a href="/screen_config">Screening Configuration</a></li>
                   <li><a href="https://drive.google.com/file/d/1X5s91VRfux4Ye59Qo2U4FzqGfTsSD_Ro/view?usp=sharing">Option Chain Analyzer</a></li>
                 </ul>
