@@ -103,12 +103,14 @@ class tools:
         openTime = curr.replace(hour=9, minute=15)
         closeTime = curr.replace(hour=15, minute=30)
         return ((openTime <= curr <= closeTime) and (0 <= curr.weekday() <= 4))
+        #return False
 
     def isClosingHour():
         curr = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
         openTime = curr.replace(hour=15, minute=00)
         closeTime = curr.replace(hour=15, minute=30)
         return ((openTime <= curr <= closeTime) and (0 <= curr.weekday() <= 4))
+        #return True
 
     def saveStockData(stockDict, configManager, loadCount):
         curr = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))

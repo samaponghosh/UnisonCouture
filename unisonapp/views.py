@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-
+from .models import *
 import pandas as pd
 from django.template import loader
 
@@ -212,6 +212,9 @@ def show_df_as_result_table(execute_inputs):
         df['Stock'] = df.index
         stock_column = df.pop('Stock')  # Remove 'Age' column and store it separately
         df.insert(0, 'Stock', stock_column)
+        print(len(df.index))
+        
+        # StockScreen.objects.filter(uname = )
         context = {'df': df.to_html(escape=False, index=False, index_names=False)}
         return context
 
@@ -304,11 +307,9 @@ def stockScreen(request):
             # picked_date = c_datepick
             # if picked_date:
                 # backtestDate = picked_date
-
             executeOption = str(c_criteria).split(' ')[0]
-
-            res = get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage)
-            
+            # StockScreen.objects.create(uname = request.user.username, Stock = "", Consolidating =0.0 , Breakout=0.0, LTP=0.0, Volume=0.0, MAsignal="", RSI=0, Trend="", Pattern="")
+            res = get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage)            
             if res == 'LS':
                 messages.error(request, "Last Screened results are not available at the moment")
                 return render(request, 'result_table.html')
