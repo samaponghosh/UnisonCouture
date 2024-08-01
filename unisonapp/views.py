@@ -25,6 +25,8 @@ import unisonapp.ConfigManager as ConfigManager
 import unisonapp.Utility as Utility
 import unisonapp.Fetcher as Fetcher
 from unisonapp.screenipy import main
+import unisonapp.Fetcher as Fetcher
+import unisonapp.Screener as Screener
 
 
 try:
@@ -119,35 +121,30 @@ def user_logout(request):
 
 
 def nifty_predict(request):
-    if request.user.is_authenticated:
-        import unisonapp.Fetcher as Fetcher
-        import unisonapp.Screener as Screener
-        configManager = ConfigManager.tools()
-        fetcher = Fetcher.tools(configManager)
-        screener = Screener.tools(configManager)
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-        prediction, trend, confidence, data_used = screener.getNiftyPrediction(
+    # if request.user.is_authenticated:
+    configManager = ConfigManager.tools()
+    fetcher = Fetcher.tools(configManager)
+    screener = Screener.tools(configManager)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+    prediction, trend, confidence, data_used = screener.getNiftyPrediction(
             data=fetcher.fetchLatestNiftyDaily(proxyServer=proxyServer), 
             proxyServer=proxyServer
         )
     
-        if 'BULLISH' in trend:
-            messages.success(request, f'Market may Open **Gap Up** next day!\n\nProbability/Strength of Prediction = {confidence} %')
-        elif 'BEARISH' in trend:
-            messages.error(request, f'Market may Open **Gap Down** next day!\n\nProbability/Strength of Prediction =  {confidence} %')
-        else:
-            messages.error(request, "Couldn't determine the Trend. Try again later!")
-        messages.warning(request,'The AI prediction should be executed After 3 PM or Around the Closing hours as the Prediction Accuracy is based on the Closing price!\n\nThis is Just a Statistical Prediction and There are Chances of **False** Predictions!')
-        messages.info(request,"Machine Learning model uses Nifty, Crude and Gold Historical prices to Predict the Gap!")
-        messages.info(request,"**Following data is used to make above prediction:**")
-        df_html = data_used.to_html(classes="table table-striped")
-        context = {'df_html': df_html}
-        return render(request, 'GapPredict.html', context)
-        #return render(request, 'GapPredict.html')
+    if 'BULLISH' in trend:
+        messages.success(request, f'Market may Open **Gap Up** next day!\n\nProbability/Strength of Prediction = {confidence} %')
+    elif 'BEARISH' in trend:
+        messages.error(request, f'Market may Open **Gap Down** next day!\n\nProbability/Strength of Prediction =  {confidence} %')
     else:
-        messages.error(request,"You have to login first to use the service")
-        return HttpResponseRedirect('/login')
-    
+        messages.error(request, "Couldn't determine the Trend. Try again later!")
+    messages.warning(request,'The AI prediction should be executed After 3 PM or Around the Closing hours as the Prediction Accuracy is based on the Closing price!\n\nThis is Just a Statistical Prediction and There are Chances of **False** Predictions!')
+    messages.info(request,"Machine Learning model uses Nifty, Crude and Gold Historical prices to Predict the Gap!")
+    messages.info(request,"**Following data is used to make above prediction:**")
+    df_html = data_used.to_html(classes="table table-striped")
+    context = {'df_html': df_html}
+    return render(request, 'GapPredict.html', context)
+        #return render(request, 'GapPredict.html')
+
 def pos_calc(request):
     if request.user.is_authenticated:
         return render(request, 'PosCalc.html')
