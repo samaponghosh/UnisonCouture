@@ -1,6 +1,7 @@
-{% extends "Navbar.html" %} {% block style %} th { text-align: left; } {%
-endblock style %} {% endblock style%}
+{% extends "Navbar.html" %}
+{% load static %}
 {% block body %} 
+<div class="fullbody" style="background-image: linear-gradient(to bottom, #053359, #ff99cc);">
 {% if form.errors %} {% for field in form %}
 {% for error in field.errors %}
 <div class="alert alert-danger">
@@ -25,13 +26,48 @@ endblock style %} {% endblock style%}
 </div>
 {% endfor %} {% endif %}
 
-<br />
+{% comment %} <br />
 <br />
 {{ df | safe }}
-<br />
+<br /> {% endcomment %}
+
+<div class="table-responsive">
+<table id="example" class="display table table-hover display" width="100%" cellspacing="0">
+		<thead>
+			<tr style="color:#FCC9C4">
+				<th style="text-align: center">Stock</th>
+				<th style="text-align: center">Consolidating</th>
+				<th style="text-align: center">Breakout</th>
+				<th style="text-align: center">Breakout</th>
+				<th style="text-align: center">LTP</th>
+				<th style="text-align: center">Volume</th>
+				<th style="text-align: center">MAsignal</th>
+				<th style="text-align: center">RSI</th>
+				<th style="text-align: center">Trend</th>
+				<th style="text-align: center">Pattern</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for i in context %}
+			<tr>
+				<td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;"><a href="https://in.tradingview.com/chart?symbol=NSE%3A{{i.Stock}}" target="_blank">{{i.Stock}}</a></td>
+				<td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.Consolidating}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.Breakout}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.LTP}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.Volume}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.MAsignal}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.RSI}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.Trend}}</td>
+        <td style="text-align: center;border:1.5px solid white;color:#ffffff;font-weight:12px;">{{i.Pattern}}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+</table>
+</div>
 <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
   <button class="btn btn-primary btn-lg" onclick="window.location.href='/'">
     Back to home
   </button>
-  {% endblock body %}
 </div>
+<br>
+{% endblock body %}

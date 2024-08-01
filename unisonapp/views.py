@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from .models import *
 import pandas as pd
 from django.template import loader
+# from sqlalchemy import create_engine
 
 import pandas as pd
 import os
@@ -154,7 +155,7 @@ def pos_calc(request):
         messages.error(request,"You have to login first to use the service")
         return HttpResponseRedirect('/login')
 
-def on_start_button_click(execute_inputs):
+def on_start_button_click(execute_inputs, uname):
     print(".........................",execute_inputs)
     def dummy_call():
         try:
@@ -187,14 +188,14 @@ def on_start_button_click(execute_inputs):
             break
     t.join()
     # sleep(3)
-    return show_df_as_result_table(execute_inputs)
+    return show_df_as_result_table(execute_inputs, uname)
 
-def show_df_as_result_table(execute_inputs):
+def show_df_as_result_table(execute_inputs, uname):
     try:
         df = pd.read_pickle('unisonapp\last_screened_unformatted_results.pkl')
         if type(execute_inputs[0]) == str or int(execute_inputs[0]) < 15:
             df.index = df.index.map(lambda x: "https://in.tradingview.com/chart?symbol=NSE%3A" + x)
-            df.index = df.index.map(lambda x: f'<a href="{x}" target="_blank">{x.split("%3A")[-1]}</a>')
+            df.index = df.index.map(lambda x: f'{x.split("%3A")[-1]}')
         elif execute_inputs[0] == '16':
             try:
                 fetcher = Fetcher.tools(configManager=ConfigManager.tools())
@@ -202,20 +203,26 @@ def show_df_as_result_table(execute_inputs):
                 url_dict_reversed = {v: k for k, v in url_dict_reversed.items()}
                 df.index = df.index.map(lambda x: "https://in.tradingview.com/chart?symbol=NSE%3A" + url_dict_reversed[x])
                 url_dict_reversed = {v: k for k, v in url_dict_reversed.items()}
-                df.index = df.index.map(lambda x: f'<a href="{x}" target="_blank">{url_dict_reversed[x.split("%3A")[-1]]}</a>')
+                df.index = df.index.map(lambda x: f'{url_dict_reversed[x.split("%3A")[-1]]}')
             except KeyError:
                 pass
         else:
             df.index = df.index.map(lambda x: "https://in.tradingview.com/chart?symbol=" + x)
-            df.index = df.index.map(lambda x: f'<a href="{x}" target="_blank">{x.split("=")[-1]}</a>')
+            df.index = df.index.map(lambda x: f'{x.split("=")[-1]}')
         
         df['Stock'] = df.index
         stock_column = df.pop('Stock')  # Remove 'Age' column and store it separately
         df.insert(0, 'Stock', stock_column)
-        print(len(df.index))
-        
-        # StockScreen.objects.filter(uname = )
-        context = {'df': df.to_html(escape=False, index=False, index_names=False)}
+        # context = {'df': df.to_html(escape=False, index=False, index_names=False)}
+        StockScreen.objects.filter(uname = uname).delete()
+        df_records = df.to_dict('records')
+        model_instances = [StockScreen(uname = uname, Stock=record['Stock'], Consolidating=record['Consolidating'], Breakout=record['Breakout (1000Days)'], LTP=record['LTP'], Volume=record['Volume'], MAsignal=record['MA-Signal'], RSI=record['RSI'], Trend=record['Trend (1000Days)'], Pattern=record['Pattern']) for record in df_records]
+        StockScreen.objects.bulk_create(model_instances)
+        # for i in range(len(df)):
+        #     for record in df_records:
+        #         print(record)
+        #         StockScreen.objects.create(uname = uname, Stock=record['Stock'], Consolidating=record['Consolidating'], LTP=record['LTP'], Volume=record['Volume'], MAsignal=record['MA-Signal'], RSI=record['RSI'], Pattern=record['Pattern'])
+        context = StockScreen.objects.filter(uname = uname)
         return context
 
     except FileNotFoundError:
@@ -225,7 +232,7 @@ def show_df_as_result_table(execute_inputs):
         # print('No Dataframe found for last_screened_results.pkl')
         return ('ND')
 
-def get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage ):
+def get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage, uname ):
     if not tickerOption.isnumeric():
         execute_inputs = [tickerOption, 0, 'N']
     elif int(tickerOption) == 0 or tickerOption is None:
@@ -278,7 +285,7 @@ def get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_
                 execute_inputs = [tickerOption, executeOption, select_pattern, 'N']
         else:
             return HttpResponse("Chart Pattern selection is required!", status=400)
-    return on_start_button_click(execute_inputs)
+    return on_start_button_click(execute_inputs, uname)
 
 def stockScreen(request):
     if request.user.is_authenticated:
@@ -295,6 +302,7 @@ def stockScreen(request):
             signal_type = request.POST.get('signal_type')
             select_pattern = request.POST.get('select_pattern')
             confluence_percentage = request.POST.get('confluence_percentage')
+            uname = request.user.username
             # c_datepick = datetime.date.today()
             # print(c_index)
             # print(c_criteria)
@@ -309,7 +317,7 @@ def stockScreen(request):
                 # backtestDate = picked_date
             executeOption = str(c_criteria).split(' ')[0]
             # StockScreen.objects.create(uname = request.user.username, Stock = "", Consolidating =0.0 , Breakout=0.0, LTP=0.0, Volume=0.0, MAsignal="", RSI=0, Trend="", Pattern="")
-            res = get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage)            
+            res = get_extra_inputs(tickerOption, executeOption, stock_codes, num_candles, min_rsi, max_rsi, select_reversal, ma_length, range_value, signal_type, select_pattern, confluence_percentage, uname)            
             if res == 'LS':
                 messages.error(request, "Last Screened results are not available at the moment")
                 return render(request, 'result_table.html')
@@ -317,7 +325,7 @@ def stockScreen(request):
                 messages.error(request, "No Dataframe found for last_screened_results.pkl")
                 return render(request, 'result_table.html')
             else:
-                return render(request, 'result_table.html', res)
+                return render(request, 'result_table.html', {'context':res})
         else:
             return render(request, 'ScreeningForm.html')
     else:
